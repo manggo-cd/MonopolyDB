@@ -5,7 +5,7 @@ Date: March 6th, 2026
 Group Number: 119
 
 | Name | Student # | CS Alias | Preferred Email |
-|----------|----------|----------|
+|----------|----------|----------|----------|
 | Katrina Wei  | 11890225  | p6c6v  | katrinawei05@gmail.com |
 | Kevin Xu  | 55195432  | c1a6u  | xukevin2005@gmail.com |
 | Daniel Zhou  | 11504941 | n6e8p  | danielzhou.nc@gmail.com |
