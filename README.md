@@ -128,3 +128,8 @@ To be completed **individually**.
 - Practice presentation
 
 Exact meeting time will be decided closer to the deadline.
+
+# AI Acknowledgement
+
+- ChatGPT was used to create a draft timeline of the completion of tasks that was edited to fit our project and individual schedules.
+https://chatgpt.com/share/69aa8823-0194-8000-be31-63fbce1b4105
