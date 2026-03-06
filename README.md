@@ -4,11 +4,11 @@ Milestone: 3
 Date: March 6th, 2026
 Group Number: 119
 
-| Name | Student # | CS Alias | Preferred Email 
+| Name | Student # | CS Alias | Preferred Email |
 |----------|----------|----------|
-| Katrina Wei  | 11890225  | p6c6v  | katrinawei05@gmail.com
-| Kevin Xu  | 55195432  | c1a6u  | xukevin2005@gmail.com
-| Daniel Zhou  | 11504941 | n6e8p  | danielzhou.nc@gmail.com
+| Katrina Wei  | 11890225  | p6c6v  | katrinawei05@gmail.com |
+| Kevin Xu  | 55195432  | c1a6u  | xukevin2005@gmail.com |
+| Daniel Zhou  | 11504941 | n6e8p  | danielzhou.nc@gmail.com |
 
 By typing our names and student numbers in the above table, we certify that the work in the attached assignment was performed solely by those whose names and student IDs are included above.
 
