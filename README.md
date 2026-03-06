@@ -33,8 +33,6 @@ Our project models a complete game session of Monopoly, tracking players, turns,
 
 ---
 
-# Timeline and Task Division
-
 ## March 10 – March 13  
 ### Milestone 2/3 Review and Planning
 
