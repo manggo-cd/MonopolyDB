@@ -24,6 +24,8 @@ Our project models a complete game session of Monopoly, tracking players, turns,
 
 - ChatGPT was used to create a draft timeline of the completion of tasks that was edited to fit our project and individual schedules.
 https://chatgpt.com/share/69aa8823-0194-8000-be31-63fbce1b4105
+- ChatGPT was also used to help quickly import our milestone 1/2 docs into .md files.
+https://chatgpt.com/share/69ab9f80-db64-8005-a986-308542c79ba2
 
 ---
 
