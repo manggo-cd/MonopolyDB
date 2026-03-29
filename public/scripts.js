@@ -28,12 +28,12 @@ async function checkDbConnection() {
     statusElem.style.display = 'inline';
 
     response.text()
-    .then((text) => {
-        statusElem.textContent = text;
-    })
-    .catch((error) => {
-        statusElem.textContent = 'connection timed out';  // Adjust error handling if required.
-    });
+        .then((text) => {
+            statusElem.textContent = text;
+        })
+        .catch((error) => {
+            statusElem.textContent = 'connection timed out';  // Adjust error handling if required.
+        });
 }
 
 // Fetches data from the demotable and displays it.
@@ -155,12 +155,52 @@ async function countDemotable() {
 }
 
 
+// Query 3: delete player
+async function fetchAndDisplayPlayers() {
+    const tableBody = document.querySelector('#playerTable tbody');
+    const response = await fetch('/players', {
+        method: 'GET'
+    });
+    const responseData = await response.json();
+
+    tableBody.innerHTML = '';
+    responseData.data.forEach(player => {
+        const [player_id, name, balance, position] = player;
+        const row = tableBody.insertRow();
+        row.insertCell(0).textContent = player_id;
+        row.insertCell(1).textContent = name;
+        row.insertCell(2).textContent = balance;
+        row.insertCell(3).textContent = position;
+        const actionCell = row.insertCell(4);
+        const btn = document.createElement('button');
+        btn.textContent = 'Delete';
+        btn.addEventListener('click', () => deletePlayer(player_id, name));
+        actionCell.appendChild(btn);
+    });
+}
+
+async function deletePlayer(playerId, playerName) {
+    const msgElement = document.getElementById('deletePlayerMsg');
+    if (!confirm(`Delete player "${playerName}" (ID: ${playerId})? This will also remove their game history, turns, and owned properties.`)) {
+        return;
+    }
+    const response = await fetch(`/players/${playerId}`, { method: 'DELETE' });
+    const responseData = await response.json();
+    if (responseData.success) {
+        msgElement.textContent = `Player "${playerName}" deleted successfully.`;
+        fetchAndDisplayPlayers();
+    } else {
+        msgElement.textContent = responseData.message || 'Error deleting player.';
+    }
+}
+
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
 // Add or remove event listeners based on the desired functionalities.
-window.onload = function() {
+window.onload = function () {
     checkDbConnection();
     fetchTableData();
+    fetchAndDisplayPlayers();
     document.getElementById("resetDemotable").addEventListener("click", resetDemotable);
     document.getElementById("insertDemotable").addEventListener("submit", insertDemotable);
     document.getElementById("updataNameDemotable").addEventListener("submit", updateNameDemotable);

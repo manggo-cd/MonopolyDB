@@ -89,7 +89,7 @@ async function initiateDemotable() {
     return await withOracleDB(async (connection) => {
         try {
             await connection.execute(`DROP TABLE DEMOTABLE`);
-        } catch(err) {
+        } catch (err) {
             console.log('Table might not exist, proceeding to create...');
         }
 
@@ -142,11 +142,37 @@ async function countDemotable() {
     });
 }
 
+// Query 3: delete player
+async function fetchPlayers() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT player_id, name, balance, position FROM Player ORDER BY player_id');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+async function deletePlayer(playerId) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            'DELETE FROM Player WHERE player_id = :playerId',
+            [playerId],
+            { autoCommit: true }
+        );
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch((err) => {
+        console.error('deletePlayer error:', err);
+        return false;
+    });
+}
+
 module.exports = {
     testOracleConnection,
     fetchDemotableFromDb,
-    initiateDemotable, 
-    insertDemotable, 
-    updateNameDemotable, 
-    countDemotable
+    initiateDemotable,
+    insertDemotable,
+    updateNameDemotable,
+    countDemotable,
+    fetchPlayers,
+    deletePlayer
 };
