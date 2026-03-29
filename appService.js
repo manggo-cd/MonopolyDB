@@ -142,7 +142,7 @@ async function countDemotable() {
     });
 }
 
-// Query 3: delete player
+// Query 3:  delete player
 async function fetchPlayers() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute('SELECT player_id, name, balance, position FROM Player ORDER BY player_id');
