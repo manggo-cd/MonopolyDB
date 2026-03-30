@@ -75,11 +75,85 @@
 
     <h2>Count the Tuples in DemoTable</h2>
     <button id="countDemotable"> count </button> <br><br>
-    <!-- A placeholder to display the count result. -->
     <div id="countResultMsg"></div> <br>
 
-    <!-- ===================================================================================== -->
-    <!-- External JavaScript file that contains the functionality/logic for the operations above. -->
+    <br><hr><br>
+
+    <!-- Query 5: Projection -->
+    <h2>View Board Positions</h2>
+    <p>Choose which details to display and arrange their order.</p>
+    <div id="projectionCheckboxes">
+        <label><input type="checkbox" value="position" onchange="toggleProjectionColumn(this)"> Position</label>&nbsp;&nbsp;
+        <label><input type="checkbox" value="name" onchange="toggleProjectionColumn(this)"> Name</label>&nbsp;&nbsp;
+        <label><input type="checkbox" value="icon" onchange="toggleProjectionColumn(this)"> Icon</label>
+    </div>
+    <p><strong>Column order:</strong></p>
+    <div id="projectionColumnOrder">No columns selected.</div>
+    <br>
+    <button id="projectionViewBtn">View</button>
+    <div id="projectionMsg"></div>
+    <table id="projectionResult" border="1">
+        <thead><tr></tr></thead>
+        <tbody></tbody>
+    </table>
+
+    <br><hr><br>
+
+    <!-- Query 6: Join -->
+    <h2>Property Ownership by Colour</h2>
+    <p>Select a colour group to see which players own properties of that colour.</p>
+    <select id="colourSelect">
+        <option value="">-- Select Colour --</option>
+    </select>
+    <button id="joinSearchBtn">Search</button>
+    <div id="joinMsg"></div>
+    <table id="joinResult" border="1">
+        <thead>
+            <tr>
+                <th>Player</th>
+                <th>Property ID</th>
+                <th>Colour</th>
+                <th>Cost</th>
+                <th>Rent</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <br><hr><br>
+
+    <!-- Query 9: Nested Aggregation -->
+    <h2>Game with Highest Average Dice Roll</h2>
+    <p>Find the game(s) where players rolled the highest on average.</p>
+    <button id="nestedAggBtn">Find</button>
+    <div id="nestedAggMsg"></div>
+    <table id="nestedAggResult" border="1">
+        <thead>
+            <tr>
+                <th>Game ID</th>
+                <th>Average Roll</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <br><hr><br>
+
+    <!-- Query 10: Division -->
+    <h2>Players Owning All Colour Groups</h2>
+    <p>Find players who own at least one property in every colour group.</p>
+    <button id="divisionBtn">Find</button>
+    <div id="divisionMsg"></div>
+    <table id="divisionResult" border="1">
+        <thead>
+            <tr>
+                <th>Player ID</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
     <script src="scripts.js"></script>
 </body>
 </html>
