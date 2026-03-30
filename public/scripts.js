@@ -155,6 +155,133 @@ async function countDemotable() {
 }
 
 
+// Query 4: selection on Player
+async function showAllSelectionPlayers() {
+    const tableBody = document.querySelector('#selectionTable tbody');
+    const msgElement = document.getElementById('selectionMsg');
+
+    const response = await fetch('/players/select', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ conditions: [] })
+    });
+    const responseData = await response.json();
+
+    tableBody.innerHTML = '';
+    if (responseData.success) {
+        msgElement.textContent = 'Showing all ' + responseData.data.length + ' player(s).';
+        responseData.data.forEach(player => {
+            const row = tableBody.insertRow();
+            row.insertCell(0).textContent = player[0];
+            row.insertCell(1).textContent = player[1];
+            row.insertCell(2).textContent = player[2];
+            row.insertCell(3).textContent = player[3];
+        });
+    } else {
+        msgElement.textContent = 'Error fetching players.';
+    }
+}
+
+// search players with whatever conditions the user added
+async function searchPlayers() {
+    const tableBody = document.querySelector('#selectionTable tbody');
+    const msgElement = document.getElementById('selectionMsg');
+
+    //grab all the condition rows
+    const rows = document.querySelectorAll('#conditionsContainer .condition-row');
+    const conditions = [];
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const connector = row.querySelector('.condition-connector').value;
+        const field = row.querySelector('.condition-field').value;
+        const operator = row.querySelector('.condition-op').value;
+        const value = row.querySelector('.condition-value').value;
+
+        if (value === '') {
+            msgElement.textContent = 'Please fill in all condition values.';
+            return;
+        }
+
+        conditions.push({ connector, field, operator, value });
+    }
+
+    const response = await fetch('/players/select', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ conditions })
+    });
+    const responseData = await response.json();
+
+    tableBody.innerHTML = '';
+    if (responseData.success) {
+        msgElement.textContent = 'Found ' + responseData.data.length + ' player(s).';
+        responseData.data.forEach(player => {
+            const row = tableBody.insertRow();
+            row.insertCell(0).textContent = player[0];
+            row.insertCell(1).textContent = player[1];
+            row.insertCell(2).textContent = player[2];
+            row.insertCell(3).textContent = player[3];
+        });
+    } else {
+        msgElement.textContent = 'Error fetching players.';
+    }
+}
+
+// adds a condition row when user clicks + Add Condition
+function addCondition() {
+    const container = document.getElementById('conditionsContainer');
+
+    const row = document.createElement('div');
+    row.className = 'condition-row';
+
+    // AND or OR
+    const connector = document.createElement('select');
+    connector.className = 'condition-connector';
+    connector.innerHTML = '<option value="AND">AND</option><option value="OR">OR</option>';
+
+    const fieldSelect = document.createElement('select');
+    fieldSelect.className = 'condition-field';
+    fieldSelect.innerHTML = `
+        <option value="player_id">Player ID</option>
+        <option value="name">Name</option>
+        <option value="balance">Balance</option>
+        <option value="position">Board Position</option>
+    `;
+
+    const opSelect = document.createElement('select');
+    opSelect.className = 'condition-op';
+    opSelect.innerHTML = `
+        <option value="=">=</option>
+        <option value="!=">!=</option>
+        <option value="<"><</option>
+        <option value=">">></option>
+        <option value="<="><=</option>
+        <option value=">=">>=</option>
+    `;
+
+    const valueInput = document.createElement('input');
+    valueInput.type = 'text';
+    valueInput.className = 'condition-value';
+    valueInput.placeholder = 'value';
+
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent = 'Remove';
+    removeBtn.addEventListener('click', () => row.remove());
+
+    row.appendChild(connector);
+    row.appendChild(fieldSelect);
+    row.appendChild(opSelect);
+    row.appendChild(valueInput);
+    row.appendChild(removeBtn);
+
+    container.appendChild(row);
+}
+
+function hideSelectionPlayers() {
+    document.querySelector('#selectionTable tbody').innerHTML = '';
+    document.getElementById('selectionMsg').textContent = '';
+}
+
 // Query 3: delete player
 async function fetchAndDisplayPlayers() {
     const tableBody = document.querySelector('#playerTable tbody');
@@ -205,6 +332,10 @@ window.onload = function () {
     document.getElementById("insertDemotable").addEventListener("submit", insertDemotable);
     document.getElementById("updataNameDemotable").addEventListener("submit", updateNameDemotable);
     document.getElementById("countDemotable").addEventListener("click", countDemotable);
+    document.getElementById("showAllPlayersBtn").addEventListener("click", showAllSelectionPlayers);
+    document.getElementById("hideAllPlayersBtn").addEventListener("click", hideSelectionPlayers);
+    document.getElementById("addConditionBtn").addEventListener("click", addCondition);
+    document.getElementById("searchPlayersBtn").addEventListener("click", searchPlayers);
 };
 
 // General function to refresh the displayed table data. 

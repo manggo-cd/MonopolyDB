@@ -142,7 +142,49 @@ async function countDemotable() {
     });
 }
 
-// Query 3: delete player
+// Query 4: selection on Player
+async function selectPlayers(conditions) {
+    return await withOracleDB(async (connection) => {
+        let whereStr = '';
+        const binds = {};
+        let condCount = 0;
+
+        const allowedFields = ['player_id', 'name', 'balance', 'position'];
+        const allowedOperators = ['=', '!=', '>', '<', '>=', '<='];
+
+        for (let i = 0; i < conditions.length; i++) {
+            const cond = conditions[i];
+            const validField = allowedFields.includes(cond.field);
+            const validOperator = allowedOperators.includes(cond.operator);
+            if (!validField || !validOperator || cond.value === '') {
+                continue;
+            }
+            // first condition starts the WHERE, after that we add AND or OR
+            if (condCount === 0) {
+                whereStr = 'WHERE ';
+            } else if (cond.connector === 'OR') {
+                whereStr += ' OR ';
+            } else {
+                whereStr += ' AND ';
+            }
+            // use bind variables instead of putting value directly in query
+            whereStr += cond.field + ' ' + cond.operator + ' :val' + condCount;
+            binds['val' + condCount] = cond.value;
+            condCount++;
+        }
+
+        const result = await connection.execute(
+            'SELECT player_id, name, balance, position FROM Player ' + whereStr + ' ORDER BY player_id',
+            binds
+        );
+        return result.rows;
+    }).catch((err) => {
+        console.error('selectPlayers error:', err);
+        return [];
+    });
+}
+
+// Query 3:  delete player
 async function fetchPlayers() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute('SELECT player_id, name, balance, position FROM Player ORDER BY player_id');
@@ -173,6 +215,7 @@ module.exports = {
     insertDemotable,
     updateNameDemotable,
     countDemotable,
+    selectPlayers,
     fetchPlayers,
     deletePlayer
 };

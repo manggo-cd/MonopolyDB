@@ -49,6 +49,13 @@ router.post("/update-name-demotable", async (req, res) => {
     }
 });
 
+// Query 4: selection on Player
+router.post('/players/select', async (req, res) => {
+    const { conditions } = req.body;
+    const players = await appService.selectPlayers(conditions);
+    res.json({ success: true, data: players });
+});
+
 // Query 3: delete player
 router.get('/players', async (req, res) => {
     const players = await appService.fetchPlayers();
