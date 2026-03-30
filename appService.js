@@ -149,8 +149,8 @@ async function selectPlayers(conditions) {
         const binds = {};
         let condCount = 0;
 
-        const allowedFields = ['name', 'balance', 'position'];
-        const allowedOperators = ['=', '>', '<', '>=', '<='];
+        const allowedFields = ['player_id', 'name', 'balance', 'position'];
+        const allowedOperators = ['=', '!=', '>', '<', '>=', '<='];
 
         for (let i = 0; i < conditions.length; i++) {
             const cond = conditions[i];
