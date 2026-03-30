@@ -182,6 +182,11 @@ async function showAllSelectionPlayers() {
     }
 }
 
+function hideSelectionPlayers() {
+    document.querySelector('#selectionTable tbody').innerHTML = '';
+    document.getElementById('selectionMsg').textContent = '';
+}
+
 // Query 3: delete player
 async function fetchAndDisplayPlayers() {
     const tableBody = document.querySelector('#playerTable tbody');
@@ -233,6 +238,7 @@ window.onload = function () {
     document.getElementById("updataNameDemotable").addEventListener("submit", updateNameDemotable);
     document.getElementById("countDemotable").addEventListener("click", countDemotable);
     document.getElementById("showAllPlayersBtn").addEventListener("click", showAllSelectionPlayers);
+    document.getElementById("hideAllPlayersBtn").addEventListener("click", hideSelectionPlayers);
 };
 
 // General function to refresh the displayed table data. 
