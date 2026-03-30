@@ -182,6 +182,56 @@ async function showAllSelectionPlayers() {
     }
 }
 
+// adds a condition row when user clicks + Add Condition
+function addCondition() {
+    const container = document.getElementById('conditionsContainer');
+
+    const row = document.createElement('div');
+    row.className = 'condition-row';
+
+    // AND or OR
+    const connector = document.createElement('select');
+    connector.className = 'condition-connector';
+    connector.innerHTML = '<option value="AND">AND</option><option value="OR">OR</option>';
+
+    const fieldSelect = document.createElement('select');
+    fieldSelect.className = 'condition-field';
+    fieldSelect.innerHTML = `
+        <option value="player_id">Player ID</option>
+        <option value="name">Name</option>
+        <option value="balance">Balance</option>
+        <option value="position">Board Position</option>
+    `;
+
+    const opSelect = document.createElement('select');
+    opSelect.className = 'condition-op';
+    opSelect.innerHTML = `
+        <option value="=">=</option>
+        <option value="!=">!=</option>
+        <option value="<"><</option>
+        <option value=">">></option>
+        <option value="<="><=</option>
+        <option value=">=">>=</option>
+    `;
+
+    const valueInput = document.createElement('input');
+    valueInput.type = 'text';
+    valueInput.className = 'condition-value';
+    valueInput.placeholder = 'value';
+
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent = 'Remove';
+    removeBtn.addEventListener('click', () => row.remove());
+
+    row.appendChild(connector);
+    row.appendChild(fieldSelect);
+    row.appendChild(opSelect);
+    row.appendChild(valueInput);
+    row.appendChild(removeBtn);
+
+    container.appendChild(row);
+}
+
 function hideSelectionPlayers() {
     document.querySelector('#selectionTable tbody').innerHTML = '';
     document.getElementById('selectionMsg').textContent = '';
@@ -239,6 +289,7 @@ window.onload = function () {
     document.getElementById("countDemotable").addEventListener("click", countDemotable);
     document.getElementById("showAllPlayersBtn").addEventListener("click", showAllSelectionPlayers);
     document.getElementById("hideAllPlayersBtn").addEventListener("click", hideSelectionPlayers);
+    document.getElementById("addConditionBtn").addEventListener("click", addCondition);
 };
 
 // General function to refresh the displayed table data. 
