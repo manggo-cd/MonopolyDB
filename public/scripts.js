@@ -155,6 +155,33 @@ async function countDemotable() {
 }
 
 
+// Query 4: selection on Player
+async function showAllSelectionPlayers() {
+    const tableBody = document.querySelector('#selectionTable tbody');
+    const msgElement = document.getElementById('selectionMsg');
+
+    const response = await fetch('/players/select', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ conditions: [] })
+    });
+    const responseData = await response.json();
+
+    tableBody.innerHTML = '';
+    if (responseData.success) {
+        msgElement.textContent = 'Showing all ' + responseData.data.length + ' player(s).';
+        responseData.data.forEach(player => {
+            const row = tableBody.insertRow();
+            row.insertCell(0).textContent = player[0];
+            row.insertCell(1).textContent = player[1];
+            row.insertCell(2).textContent = player[2];
+            row.insertCell(3).textContent = player[3];
+        });
+    } else {
+        msgElement.textContent = 'Error fetching players.';
+    }
+}
+
 // Query 3: delete player
 async function fetchAndDisplayPlayers() {
     const tableBody = document.querySelector('#playerTable tbody');
@@ -205,6 +232,7 @@ window.onload = function () {
     document.getElementById("insertDemotable").addEventListener("submit", insertDemotable);
     document.getElementById("updataNameDemotable").addEventListener("submit", updateNameDemotable);
     document.getElementById("countDemotable").addEventListener("click", countDemotable);
+    document.getElementById("showAllPlayersBtn").addEventListener("click", showAllSelectionPlayers);
 };
 
 // General function to refresh the displayed table data. 
