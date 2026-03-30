@@ -65,4 +65,50 @@ router.get('/count-demotable', async (req, res) => {
 });
 
 
+// --------------- Query 5: Projection on Board_Position ---------------
+
+router.get('/board-positions', async (req, res) => {
+    const columns = req.query.columns;
+    if (!columns) {
+        return res.status(400).json({ success: false, message: 'No columns selected.' });
+    }
+    const colArray = Array.isArray(columns) ? columns : [columns];
+    const result = await appService.projectBoardPositions(colArray);
+    res.json({ success: true, data: result });
+});
+
+
+// --------------- Query 6: Join ---------------
+
+router.get('/colours', async (req, res) => {
+    const colours = await appService.fetchColours();
+    res.json({ data: colours });
+});
+
+router.get('/player-properties', async (req, res) => {
+    const { colour } = req.query;
+    if (!colour) {
+        return res.status(400).json({ success: false, message: 'Colour is required.' });
+    }
+    const rows = await appService.fetchPlayerPropertiesByColour(colour);
+    res.json({ success: true, data: rows });
+});
+
+
+// --------------- Query 9: Nested Aggregation ---------------
+
+router.get('/highest-avg-roll', async (req, res) => {
+    const rows = await appService.fetchGameWithHighestAvgRoll();
+    res.json({ success: true, data: rows });
+});
+
+
+// --------------- Query 10: Division ---------------
+
+router.get('/players-all-colours', async (req, res) => {
+    const rows = await appService.fetchPlayersOwningAllColours();
+    res.json({ success: true, data: rows });
+});
+
+
 module.exports = router;

@@ -142,11 +142,112 @@ async function countDemotable() {
     });
 }
 
+
+// --------------- Query 5: Projection on Board_Position ---------------
+
+async function projectBoardPositions(columns) {
+    return await withOracleDB(async (connection) => {
+        const allowed = ['position', 'name', 'icon'];
+        const safe = columns.filter(c => allowed.includes(c));
+        if (safe.length === 0) return { columns: [], rows: [] };
+
+        const query = `SELECT ${safe.join(', ')} FROM Board_Position ORDER BY position`;
+        const result = await connection.execute(query);
+        return { columns: safe, rows: result.rows };
+    }).catch(() => {
+        return { columns: [], rows: [] };
+    });
+}
+
+
+// --------------- Query 6: Join (Player + Owns + Property + ColourRent) ---------------
+
+async function fetchColours() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            'SELECT colour FROM ColourRent ORDER BY colour'
+        );
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+async function fetchPlayerPropertiesByColour(colour) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT p.name, pr.property_id, pr.colour, pr.cost, cr.rent
+             FROM Player p
+             JOIN Owns o ON p.player_id = o.player_id
+             JOIN Property pr ON o.property_id = pr.property_id
+             JOIN ColourRent cr ON pr.colour = cr.colour
+             WHERE cr.colour = :colour
+             ORDER BY p.name, pr.property_id`,
+            [colour]
+        );
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+
+// --------------- Query 9: Nested Aggregation with GROUP BY ---------------
+
+async function fetchGameWithHighestAvgRoll() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT t.game_id, ROUND(AVG(t.dice_roll), 2) AS avg_roll
+             FROM Turn t
+             GROUP BY t.game_id
+             HAVING AVG(t.dice_roll) >= ALL (
+                 SELECT AVG(t2.dice_roll)
+                 FROM Turn t2
+                 GROUP BY t2.game_id
+             )`
+        );
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+
+// --------------- Query 10: Division ---------------
+
+async function fetchPlayersOwningAllColours() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT p.player_id, p.name
+             FROM Player p
+             WHERE NOT EXISTS (
+                 SELECT cr.colour
+                 FROM ColourRent cr
+                 WHERE cr.colour IN (SELECT colour FROM Property)
+                 MINUS
+                 SELECT pr.colour
+                 FROM Owns o
+                 JOIN Property pr ON o.property_id = pr.property_id
+                 WHERE o.player_id = p.player_id
+             )`
+        );
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+
 module.exports = {
     testOracleConnection,
     fetchDemotableFromDb,
-    initiateDemotable, 
-    insertDemotable, 
-    updateNameDemotable, 
-    countDemotable
+    initiateDemotable,
+    insertDemotable,
+    updateNameDemotable,
+    countDemotable,
+    projectBoardPositions,
+    fetchColours,
+    fetchPlayerPropertiesByColour,
+    fetchGameWithHighestAvgRoll,
+    fetchPlayersOwningAllColours
 };
