@@ -142,7 +142,23 @@ async function countDemotable() {
     });
 }
 
-// Query 4: selection on Player
+// Query 1: Insert Player
+async function insertPlayer(name, balance, position) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `INSERT INTO PLAYER (name, balance, position) 
+             VALUES (:name, :balance, :position)`,
+            [name, balance, position],
+            { autoCommit: true }
+        );
+
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch(() => {
+        return false;
+    });
+}
+
+// Query 4: Select Player
 async function selectPlayers(conditions) {
     return await withOracleDB(async (connection) => {
         let whereStr = '';
@@ -184,7 +200,7 @@ async function selectPlayers(conditions) {
     });
 }
 
-// Query 3:  delete player
+// Query 3: Delete Player
 async function fetchPlayers() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute('SELECT player_id, name, balance, position FROM Player ORDER BY player_id');
@@ -215,7 +231,10 @@ module.exports = {
     insertDemotable,
     updateNameDemotable,
     countDemotable,
+
     selectPlayers,
     fetchPlayers,
-    deletePlayer
+    deletePlayer,
+
+    insertPlayer
 };

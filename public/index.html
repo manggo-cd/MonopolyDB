@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <!-- This meta tag ensures that the website renders correctly across different device sizes, enhancing mobile responsiveness. -->
@@ -10,19 +11,26 @@
 
     <title>Database Application</title>
 </head>
+
 <body>
     <!-- ===================================================================================== -->
     <!-- Display the current status of the database connection. 
          !!HERE TO HELP U DEBUGGING, NOT REQUIRED IN YOUR OWN PROJECT!!
          -->
-    <h1>Database Connection Status: 
+    <h1>Database Connection Status:
         <!-- An in-line placeholder to display connection status. -->
         <span id="dbStatus"> </span>
         <!-- A loading GIF, will be hided once get the status. -->
         <img id="loadingGif" class="loading-gif" src="loading_100px.gif" alt="Loading...">
     </h1>
 
-    <br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr><br> <!-- ========================================================================= -->
+
+    <button onclick="window.location.href='mt.html'">Monopoly Tracker</button>
+
+    <br>
+    <hr><br> <!-- ========================================================================= -->
 
     <!-- Show 'Demotable'. 
         Data will be fetched and inserted here dynamically using JavaScript. -->
@@ -39,15 +47,18 @@
         </tbody>
     </table>
 
-    <br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr><br> <!-- ========================================================================= -->
 
     <h2>Reset Demotable</h2>
-    <p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
+    <p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you
+        MUST use reset</p>
     <button id="resetDemotable"> reset </button> <br>
     <!-- A placeholder to display messages related to the reset operation. -->
     <div id="resetResultMsg"></div>
 
-    <br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr><br> <!-- ========================================================================= -->
 
     <h2> Insert Values into DemoTable </h2>
     <form id="insertDemotable">
@@ -58,7 +69,8 @@
     </form>
     <div id="insertResultMsg"></div>
 
-    <br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr><br> <!-- ========================================================================= -->
 
     <h2>Update Name in DemoTable</h2>
     <p>The values are case sensitive and if you enter in the wrong case, the update statement will not do anything.</p>
@@ -71,7 +83,8 @@
     <!-- A placeholder to display messages related to the update operation. -->
     <div id="updateNameResultMsg"></div>
 
-    <br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr><br> <!-- ========================================================================= -->
 
     <h2>Count the Tuples in DemoTable</h2>
     <button id="countDemotable"> count </button> <br><br>
@@ -79,7 +92,8 @@
     <div id="countResultMsg"></div> <br>
 
     <!-- Query 4: Selection on Player -->
-    <br><hr><br>
+    <br>
+    <hr><br>
     <h2>Search Players</h2>
     <p>Filter players by adding conditions, or click Show All to see every player.</p>
 
@@ -104,7 +118,8 @@
         <tbody></tbody>
     </table>
 
-    <br><hr><br>
+    <br>
+    <hr><br>
 
     <!-- Query 3: Delete player -->
     <h2>Delete Player</h2>
@@ -127,4 +142,5 @@
     <!-- External JavaScript file that contains the functionality/logic for the operations above. -->
     <script src="scripts.js"></script>
 </body>
+
 </html>

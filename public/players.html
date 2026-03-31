@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- This meta tag ensures that the website renders correctly across different device sizes, enhancing mobile responsiveness. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Link to the external CSS stylesheet. Uncomment if you wish to customize or add styling. -->
+    <!-- <link rel="stylesheet" href="styles.css">   -->
+
+    <title>Monopoly Tracker</title>
+</head>
+
+<body>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f5f5f5;
+        }
+    </style>
+
+    <nav style="padding: 10px; border-bottom: 1px solid #000; margin-bottom: 20px;">
+        <span style="margin-right: 15px; font-weight: bold;">Monopoly Tracker</span>
+        <button onclick="window.location.href='mt.html'">Dashboard</button>
+        <button onclick="window.location.href='players.html'">Players</button>
+        <button onclick="window.location.href='properties.html'">Properties</button>
+        <button onclick="window.location.href='tt.html'">Turns & Transactions</button>
+    </nav>
+
+    <h1>players</h1>
+
+    <br>
+    <hr><br> <!-- ========================================================================= -->
+
+    <h2>table</h2>
+
+    <table id="playerTable">
+        <thead>
+            <tr>
+                <th>Player ID</th>
+                <th>Name</th>
+                <th>Balance</th>
+                <th>Position</th>
+            </tr>
+        </thead>
+
+        <tbody id="playerTableBody">
+        </tbody>
+    </table>
+
+    <br>
+    <hr><br> <!-- ========================================================================= -->
+
+    <!--Query 1: Insert Player-->
+    <h2>add new player</h2>
+
+    <form id="playerForm">
+        <div style="margin-bottom: 10px;">
+            <label>Name:</label><br>
+            <input type="text" name="name" required>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <label>Balance:</label><br>
+            <input type="number" name="balance" required>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <label>Position:</label><br>
+            <input type="number" name="position" required>
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="insertResultMsg"></div>
+
+    <br>
+    <hr><br> <!-- ========================================================================= -->
+
+    <!--Query 2: Update Player-->
+    <h2>update player</h2>
+
+    <form id="updatePlayerForm">
+        <div style="margin-bottom: 10px;">
+            <label>Player ID:</label><br>
+            <input type="number" name="player_id" required>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <label>New Name:</label><br>
+            <input type="text" name="name">
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <label>New Balance:</label><br>
+            <input type="number" name="balance">
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <label>New Position:</label><br>
+            <input type="number" name="position">
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="updateResultMsg"></div>
+</body>
+
+</html>
