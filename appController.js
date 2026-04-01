@@ -75,6 +75,12 @@ router.delete('/players/:id', async (req, res) => {
     }
 });
 
+// Query 7: group by
+router.get('/players/property-stats', async (req, res) => {
+    const stats = await appService.getPlayerPropertyStats();
+    res.json({ data: stats });
+});
+
 router.get('/count-demotable', async (req, res) => {
     const tableCount = await appService.countDemotable();
     if (tableCount >= 0) {
