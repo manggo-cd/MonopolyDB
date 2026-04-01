@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- This meta tag ensures that the website renders correctly across different device sizes, enhancing mobile responsiveness. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Link to the external CSS stylesheet. Uncomment if you wish to customize or add styling. -->
+    <!-- <link rel="stylesheet" href="styles.css">   -->
+
+    <title>Monopoly Tracker</title>
+</head>
+<body>
+    <nav style="padding: 10px; border-bottom: 1px solid #000; margin-bottom: 20px;">
+        <span style="margin-right: 15px; font-weight: bold;">Monopoly Tracker</span>
+        <button onclick="window.location.href='mt.html'">Dashboard</button>
+        <button onclick="window.location.href='players.html'">Players</button>
+        <button onclick="window.location.href='properties.html'">Properties</button>
+        <button onclick="window.location.href='tt.html'">Turns & Transactions</button>
+    </nav>
+
+    <style>
+    .stack-row {
+        display: flex;
+        justify-content: center; /* centers the whole row */
+        gap: 100px; /* space between items */
+        margin-top: 10px;
+    }
+    </style>
+
+    <div style="text-align: center;">
+    <h1>welcome to monopoly tracker!</h1>
+    <button>+ New Game</button>
+    <div class="stack-row">
+        <p>Created: March 28th, 2026</p>
+        <p>Game Status: Ongoing</p>
+        <p>Players: 0</p>
+    </div>
+</div>
+
+<style>
+    .main-layout {
+        display: flex;
+        gap: 10px; 
+        width: 100%;
+    }
+
+    .board {
+        width: 60%;
+        border: 1px solid #000;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .standings {
+        width: 40%;
+        border: 1px solid #000;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+</style>
+
+    <div class="main-layout">
+        <div class="board">
+            <h2>board map</h2>
+        </div>
+
+        <div class="standings">
+            <h2>player standings</h2>
+        </div>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>

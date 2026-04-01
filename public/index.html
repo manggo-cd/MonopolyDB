@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <!-- This meta tag ensures that the website renders correctly across different device sizes, enhancing mobile responsiveness. -->
@@ -10,19 +11,26 @@
 
     <title>Database Application</title>
 </head>
+
 <body>
     <!-- ===================================================================================== -->
     <!-- Display the current status of the database connection. 
          !!HERE TO HELP U DEBUGGING, NOT REQUIRED IN YOUR OWN PROJECT!!
          -->
-    <h1>Database Connection Status: 
+    <h1>Database Connection Status:
         <!-- An in-line placeholder to display connection status. -->
         <span id="dbStatus"> </span>
         <!-- A loading GIF, will be hided once get the status. -->
         <img id="loadingGif" class="loading-gif" src="loading_100px.gif" alt="Loading...">
     </h1>
 
-    <br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr><br>
+
+    <button onclick="window.location.href='mt.html'">Monopoly Tracker</button>
+
+    <br>
+    <hr><br>
 
     <!-- Show 'Demotable'. 
         Data will be fetched and inserted here dynamically using JavaScript. -->
@@ -30,7 +38,6 @@
     <table id="demotable" border="1">
         <thead>
             <tr>
-                <!--Table head, need to be adjusted accordingly to align with your own.-->
                 <th>ID</th>
                 <th>Name</th>
             </tr>
@@ -39,15 +46,16 @@
         </tbody>
     </table>
 
-    <br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr><br>
 
     <h2>Reset Demotable</h2>
     <p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
     <button id="resetDemotable"> reset </button> <br>
-    <!-- A placeholder to display messages related to the reset operation. -->
     <div id="resetResultMsg"></div>
 
-    <br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr><br>
 
     <h2> Insert Values into DemoTable </h2>
     <form id="insertDemotable">
@@ -58,7 +66,8 @@
     </form>
     <div id="insertResultMsg"></div>
 
-    <br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr><br>
 
     <h2>Update Name in DemoTable</h2>
     <p>The values are case sensitive and if you enter in the wrong case, the update statement will not do anything.</p>
@@ -68,18 +77,45 @@
 
         <button type="submit"> submit </button> <br>
     </form>
-    <!-- A placeholder to display messages related to the update operation. -->
     <div id="updateNameResultMsg"></div>
 
-    <br><hr><br> <!-- ========================================================================= -->
+    <br>
+    <hr><br>
 
     <h2>Count the Tuples in DemoTable</h2>
     <button id="countDemotable"> count </button> <br><br>
     <div id="countResultMsg"></div> <br>
 
-    <br><hr><br>
+    <!-- Q4: selection on Player -->
+    <br>
+    <hr><br>
+    <h2>Search Players</h2>
+    <p>Filter players by adding conditions, or click Show All to see every player.</p>
 
-    <!-- Query 5: Projection -->
+    <div id="conditionsContainer"></div>
+    <button id="addConditionBtn">+ Add Condition</button>
+    <br><br>
+
+    <button id="searchPlayersBtn">Search</button>
+    <button id="showAllPlayersBtn">Show All</button>
+    <button id="hideAllPlayersBtn">Hide</button>
+    <div id="selectionMsg"></div>
+    <table id="selectionTable" border="1">
+        <thead>
+            <tr>
+                <th>Player ID</th>
+                <th>Name</th>
+                <th>Balance</th>
+                <th>Board Position</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <br>
+    <hr><br>
+
+    <!-- Q5: projection on Board_Position -->
     <h2>View Board Positions</h2>
     <p>Choose which details to display and arrange their order.</p>
     <div id="projectionCheckboxes">
@@ -97,9 +133,10 @@
         <tbody></tbody>
     </table>
 
-    <br><hr><br>
+    <br>
+    <hr><br>
 
-    <!-- Query 6: Join -->
+    <!-- Q6: join -->
     <h2>Property Ownership by Colour</h2>
     <p>Select a colour group to see which players own properties of that colour.</p>
     <select id="colourSelect">
@@ -120,9 +157,49 @@
         <tbody></tbody>
     </table>
 
-    <br><hr><br>
+    <br>
+    <hr><br>
 
-    <!-- Query 9: Nested Aggregation -->
+    <!-- Q7: group by -->
+    <h2>Player Property Stats</h2>
+    <p>Shows how many properties each player owns and the total value of their properties.</p>
+    <button id="showPropertyStatsBtn">Show Stats</button>
+    <button id="hidePropertyStatsBtn">Hide</button>
+    <table id="propertyStatsTable" border="1">
+        <thead>
+            <tr>
+                <th>Player ID</th>
+                <th>Name</th>
+                <th>Properties Owned</th>
+                <th>Total Property Value</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <br>
+    <hr><br>
+
+    <!-- Q8: aggregation with HAVING -->
+    <h2>Game Turn Summary</h2>
+    <p>Shows games where more than one turn has been played, along with the average dice roll.</p>
+    <button id="showTurnSummaryBtn">Show Summary</button>
+    <button id="hideTurnSummaryBtn">Hide</button>
+    <table id="turnSummaryTable" border="1">
+        <thead>
+            <tr>
+                <th>Game ID</th>
+                <th>Turns Played</th>
+                <th>Average Dice Roll</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <br>
+    <hr><br>
+
+    <!-- Q9: nested aggregation -->
     <h2>Game with Highest Average Dice Roll</h2>
     <p>Find the game(s) where players rolled the highest on average.</p>
     <button id="nestedAggBtn">Find</button>
@@ -137,9 +214,10 @@
         <tbody></tbody>
     </table>
 
-    <br><hr><br>
+    <br>
+    <hr><br>
 
-    <!-- Query 10: Division -->
+    <!-- Q10: division -->
     <h2>Players Owning All Colour Groups</h2>
     <p>Find players who own at least one property in every colour group.</p>
     <button id="divisionBtn">Find</button>
@@ -154,6 +232,27 @@
         <tbody></tbody>
     </table>
 
+    <br>
+    <hr><br>
+
+    <!-- Q3: delete player -->
+    <h2>Delete Player</h2>
+    <p>Select a player to delete. This will also remove their game history, turns, and owned properties.</p>
+    <table id="playerTable" border="1">
+        <thead>
+            <tr>
+                <th>Player ID</th>
+                <th>Name</th>
+                <th>Balance</th>
+                <th>Board Position</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div id="deletePlayerMsg"></div>
+
     <script src="scripts.js"></script>
 </body>
+
 </html>
