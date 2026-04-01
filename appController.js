@@ -65,7 +65,7 @@ router.get('/count-demotable', async (req, res) => {
 });
 
 
-// --------------- Query 5: Projection on Board_Position ---------------
+// Q5: projection
 
 router.get('/board-positions', async (req, res) => {
     const columns = req.query.columns;
@@ -78,7 +78,7 @@ router.get('/board-positions', async (req, res) => {
 });
 
 
-// --------------- Query 6: Join ---------------
+// Q6: join
 
 router.get('/colours', async (req, res) => {
     const colours = await appService.fetchColours();
@@ -95,7 +95,7 @@ router.get('/player-properties', async (req, res) => {
 });
 
 
-// --------------- Query 9: Nested Aggregation ---------------
+// Q9: nested aggregation
 
 router.get('/highest-avg-roll', async (req, res) => {
     const rows = await appService.fetchGameWithHighestAvgRoll();
@@ -103,7 +103,7 @@ router.get('/highest-avg-roll', async (req, res) => {
 });
 
 
-// --------------- Query 10: Division ---------------
+// Q10: division
 
 router.get('/players-all-colours', async (req, res) => {
     const rows = await appService.fetchPlayersOwningAllColours();

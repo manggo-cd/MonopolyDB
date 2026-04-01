@@ -143,7 +143,7 @@ async function countDemotable() {
 }
 
 
-// --------------- Query 5: Projection on Board_Position ---------------
+// Q5: projection on Board_Position
 
 async function projectBoardPositions(columns) {
     return await withOracleDB(async (connection) => {
@@ -160,7 +160,7 @@ async function projectBoardPositions(columns) {
 }
 
 
-// --------------- Query 6: Join (Player + Owns + Property + ColourRent) ---------------
+// Q6: join across Player, Owns, Property, ColourRent
 
 async function fetchColours() {
     return await withOracleDB(async (connection) => {
@@ -192,7 +192,7 @@ async function fetchPlayerPropertiesByColour(colour) {
 }
 
 
-// --------------- Query 9: Nested Aggregation with GROUP BY ---------------
+// Q9: nested aggregation with GROUP BY
 
 async function fetchGameWithHighestAvgRoll() {
     return await withOracleDB(async (connection) => {
@@ -213,7 +213,7 @@ async function fetchGameWithHighestAvgRoll() {
 }
 
 
-// --------------- Query 10: Division ---------------
+// Q10: division
 
 async function fetchPlayersOwningAllColours() {
     return await withOracleDB(async (connection) => {

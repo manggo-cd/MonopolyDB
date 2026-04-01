@@ -155,7 +155,7 @@ async function countDemotable() {
 }
 
 
-// --------------- Query 5: Projection ---------------
+// Q5: projection
 
 const projectionColumns = [];
 
@@ -259,7 +259,7 @@ async function fetchBoardPositions() {
 }
 
 
-// --------------- Query 6: Join ---------------
+// Q6: join
 
 async function loadColourOptions() {
     const select = document.getElementById('colourSelect');
@@ -307,7 +307,7 @@ async function fetchPlayerProperties() {
 }
 
 
-// --------------- Query 9: Nested Aggregation ---------------
+// Q9: nested aggregation
 
 async function fetchHighestAvgRoll() {
     const msgEl = document.getElementById('nestedAggMsg');
@@ -331,7 +331,7 @@ async function fetchHighestAvgRoll() {
 }
 
 
-// --------------- Query 10: Division ---------------
+// Q10: division
 
 async function fetchPlayersAllColours() {
     const msgEl = document.getElementById('divisionMsg');
