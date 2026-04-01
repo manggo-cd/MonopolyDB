@@ -9,7 +9,7 @@
     <!-- Link to the external CSS stylesheet. Uncomment if you wish to customize or add styling. -->
     <!-- <link rel="stylesheet" href="styles.css">   -->
 
-    <title>Monopoly Tracker</title>
+    <title>Database Application</title>
 </head>
 
 <body>
@@ -17,19 +17,100 @@
     <!-- Display the current status of the database connection. 
          !!HERE TO HELP U DEBUGGING, NOT REQUIRED IN YOUR OWN PROJECT!!
          -->
-    <h3>Database Connection Status:
+    <h1>Database Connection Status:
         <!-- An in-line placeholder to display connection status. -->
         <span id="dbStatus"> </span>
         <!-- A loading GIF, will be hided once get the status. -->
         <img id="loadingGif" class="loading-gif" src="loading_100px.gif" alt="Loading...">
-    </h3>
+    </h1>
 
-    <div style="text-align: center;">
-        <h1>welcome to monopoly tracker!</h1>
-        <button onclick="window.location.href='players.html'">Players</button>
-        <button onclick="window.location.href='properties.html'">Properties</button>
-        <button onclick="window.location.href='tt.html'">Turns & Transactions</button>
-    </div>
+    <br>
+    <hr><br>
+
+    <button onclick="window.location.href='mt.html'">Monopoly Tracker</button>
+
+    <br>
+    <hr><br>
+
+    <!-- Show 'Demotable'. 
+        Data will be fetched and inserted here dynamically using JavaScript. -->
+    <h2>Show Demotable</h2>
+    <table id="demotable" border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <br>
+    <hr><br>
+
+    <h2>Reset Demotable</h2>
+    <p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
+    <button id="resetDemotable"> reset </button> <br>
+    <div id="resetResultMsg"></div>
+
+    <br>
+    <hr><br>
+
+    <h2> Insert Values into DemoTable </h2>
+    <form id="insertDemotable">
+        ID: <input type="number" id="insertId" placeholder="Enter ID" required> <br><br>
+        Name: <input type="text" id="insertName" placeholder="Enter Name" maxlength="20"> <br><br>
+
+        <button type="submit"> insert </button> <br>
+    </form>
+    <div id="insertResultMsg"></div>
+
+    <br>
+    <hr><br>
+
+    <h2>Update Name in DemoTable</h2>
+    <p>The values are case sensitive and if you enter in the wrong case, the update statement will not do anything.</p>
+    <form id="updataNameDemotable">
+        Old Name: <input type="text" id="updateOldName" placeholder="Enter Old Name" required> <br><br>
+        New Name: <input type="text" id="updateNewName" placeholder="Enter New Name" maxlength="20"> <br><br>
+
+        <button type="submit"> submit </button> <br>
+    </form>
+    <div id="updateNameResultMsg"></div>
+
+    <br>
+    <hr><br>
+
+    <h2>Count the Tuples in DemoTable</h2>
+    <button id="countDemotable"> count </button> <br><br>
+    <div id="countResultMsg"></div> <br>
+
+    <!-- Q4: selection on Player -->
+    <br>
+    <hr><br>
+    <h2>Search Players</h2>
+    <p>Filter players by adding conditions, or click Show All to see every player.</p>
+
+    <div id="conditionsContainer"></div>
+    <button id="addConditionBtn">+ Add Condition</button>
+    <br><br>
+
+    <button id="searchPlayersBtn">Search</button>
+    <button id="showAllPlayersBtn">Show All</button>
+    <button id="hideAllPlayersBtn">Hide</button>
+    <div id="selectionMsg"></div>
+    <table id="selectionTable" border="1">
+        <thead>
+            <tr>
+                <th>Player ID</th>
+                <th>Name</th>
+                <th>Balance</th>
+                <th>Board Position</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 
     <br>
     <hr><br>
@@ -38,8 +119,7 @@
     <h2>View Board Positions</h2>
     <p>Choose which details to display and arrange their order.</p>
     <div id="projectionCheckboxes">
-        <label><input type="checkbox" value="position" onchange="toggleProjectionColumn(this)">
-            Position</label>&nbsp;&nbsp;
+        <label><input type="checkbox" value="position" onchange="toggleProjectionColumn(this)"> Position</label>&nbsp;&nbsp;
         <label><input type="checkbox" value="name" onchange="toggleProjectionColumn(this)"> Name</label>&nbsp;&nbsp;
         <label><input type="checkbox" value="icon" onchange="toggleProjectionColumn(this)"> Icon</label>
     </div>
@@ -49,9 +129,7 @@
     <button id="projectionViewBtn">View</button>
     <div id="projectionMsg"></div>
     <table id="projectionResult" border="1">
-        <thead>
-            <tr></tr>
-        </thead>
+        <thead><tr></tr></thead>
         <tbody></tbody>
     </table>
 
@@ -156,6 +234,23 @@
 
     <br>
     <hr><br>
+
+    <!-- Q3: delete player -->
+    <h2>Delete Player</h2>
+    <p>Select a player to delete. This will also remove their game history, turns, and owned properties.</p>
+    <table id="playerTable" border="1">
+        <thead>
+            <tr>
+                <th>Player ID</th>
+                <th>Name</th>
+                <th>Balance</th>
+                <th>Board Position</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div id="deletePlayerMsg"></div>
 
     <script src="scripts.js"></script>
 </body>
