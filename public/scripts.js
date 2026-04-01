@@ -155,7 +155,112 @@ async function countDemotable() {
 }
 
 
-// Query 4: selection on Player
+// Query 1: Insert Player
+async function insertPlayer(event) {
+    event.preventDefault();
+
+    const nameValue = document.querySelector('input[name="name"]').value;
+    const balanceValue = document.querySelector('input[name="balance"]').value;
+    const positionValue = document.querySelector('input[name="position"]').value;
+
+    const response = await fetch('/insert-player', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: nameValue,
+            balance: balanceValue,
+            position: positionValue
+        })
+    });
+
+    const responseData = await response.json();
+    const messageElement = document.getElementById('insertResultMsg');
+
+    if (responseData.success) {
+        messageElement.textContent = "Player inserted successfully!";
+
+        // Refresh table (you’ll define this)
+        fetchPlayerTable();
+    } else {
+        messageElement.textContent = "Error inserting player!";
+    }
+}
+
+// Query 2: Update Player
+async function updatePlayer(event) {
+    event.preventDefault();
+
+    const idValue = document.querySelector('input[name="player_id"]').value;
+    const nameValue = document.querySelector('#updatePlayerForm input[name="name"]').value;
+    const balanceValue = document.querySelector('#updatePlayerForm input[name="balance"]').value;
+    const positionValue = document.querySelector('#updatePlayerForm input[name="position"]').value;
+
+    const response = await fetch('/update-player', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            player_id: idValue,
+            name: nameValue,
+            balance: balanceValue,
+            position: positionValue
+        })
+    });
+
+    const responseData = await response.json();
+    const messageElement = document.getElementById('updateResultMsg');
+
+    if (responseData.success) {
+        messageElement.textContent = "Player updated successfully!";
+        fetchPlayerTable(); // refresh table
+    } else {
+        messageElement.textContent = "Error updating player!";
+    }
+}
+
+// Query 3: Delete Player
+async function fetchAndDisplayPlayers() {
+    const tableBody = document.querySelector('#playerTable tbody');
+    const response = await fetch('/players', {
+        method: 'GET'
+    });
+    const responseData = await response.json();
+
+    tableBody.innerHTML = '';
+    responseData.data.forEach(player => {
+        const [player_id, name, balance, position] = player;
+        const row = tableBody.insertRow();
+        row.insertCell(0).textContent = player_id;
+        row.insertCell(1).textContent = name;
+        row.insertCell(2).textContent = balance;
+        row.insertCell(3).textContent = position;
+        const actionCell = row.insertCell(4);
+        const btn = document.createElement('button');
+        btn.textContent = 'Delete';
+        btn.addEventListener('click', () => deletePlayer(player_id, name));
+        actionCell.appendChild(btn);
+    });
+}
+
+async function deletePlayer(playerId, playerName) {
+    const msgElement = document.getElementById('deletePlayerMsg');
+    if (!confirm(`Delete player "${playerName}" (ID: ${playerId})? This will also remove their game history, turns, and owned properties.`)) {
+        return;
+    }
+    const response = await fetch(`/players/${playerId}`, { method: 'DELETE' });
+    const responseData = await response.json();
+    if (responseData.success) {
+        msgElement.textContent = `Player "${playerName}" deleted successfully.`;
+        fetchAndDisplayPlayers();
+    } else {
+        msgElement.textContent = responseData.message || 'Error deleting player.';
+    }
+}
+
+// Query 4: Select Player
 async function showAllSelectionPlayers() {
     const tableBody = document.querySelector('#selectionTable tbody');
     const msgElement = document.getElementById('selectionMsg');
@@ -351,16 +456,24 @@ window.onload = function () {
     checkDbConnection();
     fetchTableData();
     fetchAndDisplayPlayers();
+
     document.getElementById("resetDemotable").addEventListener("click", resetDemotable);
     document.getElementById("insertDemotable").addEventListener("submit", insertDemotable);
     document.getElementById("updataNameDemotable").addEventListener("submit", updateNameDemotable);
     document.getElementById("countDemotable").addEventListener("click", countDemotable);
+
     document.getElementById("showAllPlayersBtn").addEventListener("click", showAllSelectionPlayers);
     document.getElementById("hideAllPlayersBtn").addEventListener("click", hideSelectionPlayers);
     document.getElementById("addConditionBtn").addEventListener("click", addCondition);
     document.getElementById("searchPlayersBtn").addEventListener("click", searchPlayers);
     document.getElementById("showPropertyStatsBtn").addEventListener("click", fetchAndDisplayPropertyStats);
     document.getElementById("hidePropertyStatsBtn").addEventListener("click", hidePropertyStats);
+
+    // Query 1
+    document.getElementById('playerForm').addEventListener('submit', insertPlayer);
+
+    // Query 2
+    document.getElementById('updatePlayerForm').addEventListener('submit', updatePlayer);
 };
 
 // General function to refresh the displayed table data. 

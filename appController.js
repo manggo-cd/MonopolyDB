@@ -49,14 +49,33 @@ router.post("/update-name-demotable", async (req, res) => {
     }
 });
 
-// Query 4: selection on Player
-router.post('/players/select', async (req, res) => {
-    const { conditions } = req.body;
-    const players = await appService.selectPlayers(conditions);
-    res.json({ success: true, data: players });
+// Query 1: Insert Player
+router.post("/insert-player", async (req, res) => {
+    const { name, balance, position } = req.body;
+
+    const insertResult = await appService.insertPlayer(name, balance, position);
+
+    if (insertResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
 });
 
-// Query 3: delete player
+// Query 2: Update Player
+router.post("/update-player", async (req, res) => {
+    const { player_id, name, balance, position } = req.body;
+
+    const updateResult = await appService.updatePlayer(player_id, name, balance, position);
+
+    if (updateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+// Query 3: Delete Player
 router.get('/players', async (req, res) => {
     const players = await appService.fetchPlayers();
     res.json({ data: players });
@@ -79,6 +98,12 @@ router.delete('/players/:id', async (req, res) => {
 router.get('/players/property-stats', async (req, res) => {
     const stats = await appService.getPlayerPropertyStats();
     res.json({ data: stats });
+
+// Query 4: Select Player
+router.post('/players/select', async (req, res) => {
+    const { conditions } = req.body;
+    const players = await appService.selectPlayers(conditions);
+    res.json({ success: true, data: players });
 });
 
 router.get('/count-demotable', async (req, res) => {
