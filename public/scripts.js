@@ -282,6 +282,25 @@ function hideSelectionPlayers() {
     document.getElementById('selectionMsg').textContent = '';
 }
 
+// Query 7: group by - show property stats per player
+async function fetchAndDisplayPropertyStats() {
+    const tableBody = document.querySelector('#propertyStatsTable tbody');
+
+    const response = await fetch('/players/property-stats', {
+        method: 'GET'
+    });
+    const responseData = await response.json();
+
+    tableBody.innerHTML = '';
+    responseData.data.forEach(row => {
+        const tr = tableBody.insertRow();
+        tr.insertCell(0).textContent = row[0];
+        tr.insertCell(1).textContent = row[1];
+        tr.insertCell(2).textContent = row[2];
+        tr.insertCell(3).textContent = row[3];
+    });
+}
+
 // Query 3: delete player
 async function fetchAndDisplayPlayers() {
     const tableBody = document.querySelector('#playerTable tbody');
@@ -336,6 +355,7 @@ window.onload = function () {
     document.getElementById("hideAllPlayersBtn").addEventListener("click", hideSelectionPlayers);
     document.getElementById("addConditionBtn").addEventListener("click", addCondition);
     document.getElementById("searchPlayersBtn").addEventListener("click", searchPlayers);
+    document.getElementById("showPropertyStatsBtn").addEventListener("click", fetchAndDisplayPropertyStats);
 };
 
 // General function to refresh the displayed table data. 
