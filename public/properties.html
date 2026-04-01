@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- This meta tag ensures that the website renders correctly across different device sizes, enhancing mobile responsiveness. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="styles.css"> 
+
+    <title>Monopoly Tracker</title>
+</head>
+
+<body>
+    <!-- ===================================================================================== -->
+    <!-- Display the current status of the database connection. 
+         !!HERE TO HELP U DEBUGGING, NOT REQUIRED IN YOUR OWN PROJECT!!
+         -->
+    <h3>Database Connection Status:
+        <!-- An in-line placeholder to display connection status. -->
+        <span id="dbStatus"> </span>
+        <!-- A loading GIF, will be hided once get the status. -->
+        <img id="loadingGif" class="loading-gif" src="loading_100px.gif" alt="Loading...">
+    </h3>
+
+    <div style="text-align: center;">
+        <h1>welcome to monopoly tracker!</h1>
+        <button onclick="window.location.href='index.html'">Home</button>
+        <button onclick="window.location.href='players.html'">Players</button>
+        <button onclick="window.location.href='properties.html'">Properties</button>
+    </div>
+
+    <br>
+    <hr><br> <!-- ========================================================================= -->
+
+    <h2>property table</h2>
+
+    <table id="joinResult">
+        <thead>
+            <tr>
+                <th>Player</th>
+                <th>Property ID</th>
+                <th>Colour</th>
+                <th>Cost</th>
+                <th>Rent</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div id="joinMsg"></div>
+
+    <br>
+    <hr><br> <!-- ========================================================================= -->
+
+    <!-- Query 6: Join -->
+    <h2>property ownership by colour</h2>
+    <p>Select a colour group to see which players own properties of that colour.</p>
+    <select id="colourSelect">
+        <option value="">-- Select Colour --</option>
+    </select>
+    <button id="joinSearchBtn">Search</button>
+</body>
+
+</html>

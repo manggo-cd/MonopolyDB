@@ -6,8 +6,7 @@
     <!-- This meta tag ensures that the website renders correctly across different device sizes, enhancing mobile responsiveness. -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Link to the external CSS stylesheet. Uncomment if you wish to customize or add styling. -->
-    <!-- <link rel="stylesheet" href="styles.css">   -->
+    <link rel="stylesheet" href="styles.css">
 
     <title>Monopoly Tracker</title>
 </head>
@@ -26,9 +25,9 @@
 
     <div style="text-align: center;">
         <h1>welcome to monopoly tracker!</h1>
+        <button onclick="window.location.href='index.html'">Home</button>
         <button onclick="window.location.href='players.html'">Players</button>
         <button onclick="window.location.href='properties.html'">Properties</button>
-        <button onclick="window.location.href='tt.html'">Turns & Transactions</button>
     </div>
 
     <br>
@@ -48,7 +47,7 @@
     <br>
     <button id="projectionViewBtn">View</button>
     <div id="projectionMsg"></div>
-    <table id="projectionResult" border="1">
+    <table id="projectionResult">
         <thead>
             <tr></tr>
         </thead>
@@ -58,56 +57,12 @@
     <br>
     <hr><br>
 
-    <!-- Q6: join -->
-    <h2>Property Ownership by Colour</h2>
-    <p>Select a colour group to see which players own properties of that colour.</p>
-    <select id="colourSelect">
-        <option value="">-- Select Colour --</option>
-    </select>
-    <button id="joinSearchBtn">Search</button>
-    <div id="joinMsg"></div>
-    <table id="joinResult" border="1">
-        <thead>
-            <tr>
-                <th>Player</th>
-                <th>Property ID</th>
-                <th>Colour</th>
-                <th>Cost</th>
-                <th>Rent</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    <br>
-    <hr><br>
-
-    <!-- Q7: group by -->
-    <h2>Player Property Stats</h2>
-    <p>Shows how many properties each player owns and the total value of their properties.</p>
-    <button id="showPropertyStatsBtn">Show Stats</button>
-    <button id="hidePropertyStatsBtn">Hide</button>
-    <table id="propertyStatsTable" border="1">
-        <thead>
-            <tr>
-                <th>Player ID</th>
-                <th>Name</th>
-                <th>Properties Owned</th>
-                <th>Total Property Value</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    <br>
-    <hr><br>
-
-    <!-- Q8: aggregation with HAVING -->
+    <!-- Query 8: Aggregation with Having -->
     <h2>Game Turn Summary</h2>
     <p>Shows games where more than one turn has been played, along with the average dice roll.</p>
     <button id="showTurnSummaryBtn">Show Summary</button>
     <button id="hideTurnSummaryBtn">Hide</button>
-    <table id="turnSummaryTable" border="1">
+    <table id="turnSummaryTable">
         <thead>
             <tr>
                 <th>Game ID</th>
@@ -121,34 +76,16 @@
     <br>
     <hr><br>
 
-    <!-- Q9: nested aggregation -->
-    <h2>Game with Highest Average Dice Roll</h2>
-    <p>Find the game(s) where players rolled the highest on average.</p>
+    <!-- Query 9: Nested Aggregation -->
+    <h2>Game With Highest Average Dice Roll</h2>
+    <p>Finds the game(s) where players rolled the highest on average.</p>
     <button id="nestedAggBtn">Find</button>
     <div id="nestedAggMsg"></div>
-    <table id="nestedAggResult" border="1">
+    <table id="nestedAggResult">
         <thead>
             <tr>
                 <th>Game ID</th>
                 <th>Average Roll</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    <br>
-    <hr><br>
-
-    <!-- Q10: division -->
-    <h2>Players Owning All Colour Groups</h2>
-    <p>Find players who own at least one property in every colour group.</p>
-    <button id="divisionBtn">Find</button>
-    <div id="divisionMsg"></div>
-    <table id="divisionResult" border="1">
-        <thead>
-            <tr>
-                <th>Player ID</th>
-                <th>Name</th>
             </tr>
         </thead>
         <tbody></tbody>
