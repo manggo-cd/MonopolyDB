@@ -158,6 +158,47 @@ async function insertPlayer(name, balance, position) {
     });
 }
 
+// Query 2: Update Player
+async function updatePlayer(player_id, name, balance, position) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `UPDATE PLAYER 
+             SET name = :name, balance = :balance, position = :position 
+             WHERE player_id = :player_id`,
+            [name, balance, position, player_id],
+            { autoCommit: true }
+        );
+
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch(() => {
+        return false;
+    });
+}
+
+// Query 3: Delete Player
+async function fetchPlayers() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT player_id, name, balance, position FROM Player ORDER BY player_id');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+async function deletePlayer(playerId) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            'DELETE FROM Player WHERE player_id = :playerId',
+            [playerId],
+            { autoCommit: true }
+        );
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch((err) => {
+        console.error('deletePlayer error:', err);
+        return false;
+    });
+}
+
 // Query 4: Select Player
 async function selectPlayers(conditions) {
     return await withOracleDB(async (connection) => {
@@ -200,30 +241,6 @@ async function selectPlayers(conditions) {
     });
 }
 
-// Query 3: Delete Player
-async function fetchPlayers() {
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute('SELECT player_id, name, balance, position FROM Player ORDER BY player_id');
-        return result.rows;
-    }).catch(() => {
-        return [];
-    });
-}
-
-async function deletePlayer(playerId) {
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute(
-            'DELETE FROM Player WHERE player_id = :playerId',
-            [playerId],
-            { autoCommit: true }
-        );
-        return result.rowsAffected && result.rowsAffected > 0;
-    }).catch((err) => {
-        console.error('deletePlayer error:', err);
-        return false;
-    });
-}
-
 module.exports = {
     testOracleConnection,
     fetchDemotableFromDb,
@@ -236,5 +253,6 @@ module.exports = {
     fetchPlayers,
     deletePlayer,
 
-    insertPlayer
+    insertPlayer,
+    updatePlayer
 };

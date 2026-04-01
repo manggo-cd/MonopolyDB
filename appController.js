@@ -62,11 +62,17 @@ router.post("/insert-player", async (req, res) => {
     }
 });
 
-// Query 4: Select Player
-router.post('/players/select', async (req, res) => {
-    const { conditions } = req.body;
-    const players = await appService.selectPlayers(conditions);
-    res.json({ success: true, data: players });
+// Query 2: Update Player
+router.post("/update-player", async (req, res) => {
+    const { player_id, name, balance, position } = req.body;
+
+    const updateResult = await appService.updatePlayer(player_id, name, balance, position);
+
+    if (updateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
 });
 
 // Query 3: Delete Player
@@ -86,6 +92,13 @@ router.delete('/players/:id', async (req, res) => {
     } else {
         res.status(404).json({ success: false, message: 'Player not found or could not be deleted.' });
     }
+});
+
+// Query 4: Select Player
+router.post('/players/select', async (req, res) => {
+    const { conditions } = req.body;
+    const players = await appService.selectPlayers(conditions);
+    res.json({ success: true, data: players });
 });
 
 router.get('/count-demotable', async (req, res) => {
