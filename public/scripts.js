@@ -154,6 +154,37 @@ async function countDemotable() {
     }
 }
 
+// Fetches data from the Player Table and displays it.
+async function fetchAndDisplayPlayers() {
+    const tableElement = document.getElementById('playerTable');
+    const tableBody = tableElement.querySelector('tbody');
+    
+    const response = await fetch('/players', {
+        method: 'GET'
+    });
+
+    const responseData = await response.json();
+    const players = responseData.data;
+
+    tableBody.innerHTML = '';
+
+    players.forEach(player => {
+        const row = tableBody.insertRow();
+
+        row.insertCell(0).textContent = player.player_id;
+        row.insertCell(1).textContent = player.name;
+        row.insertCell(2).textContent = player.balance;
+        row.insertCell(3).textContent = player.position;
+
+        const actionCell = row.insertCell(4);
+        const btn = document.createElement('button');
+        btn.textContent = 'Delete';
+
+        btn.addEventListener('click', () => deletePlayer(player.player_id, player.name));
+
+        actionCell.appendChild(btn);
+    });
+}
 
 // Query 1: Insert Player
 async function insertPlayer(event) {
@@ -222,29 +253,6 @@ async function updatePlayer(event) {
 }
 
 // Query 3: Delete Player
-async function fetchAndDisplayPlayers() {
-    const tableBody = document.querySelector('#playerTable tbody');
-    const response = await fetch('/players', {
-        method: 'GET'
-    });
-    const responseData = await response.json();
-
-    tableBody.innerHTML = '';
-    responseData.data.forEach(player => {
-        const [player_id, name, balance, position] = player;
-        const row = tableBody.insertRow();
-        row.insertCell(0).textContent = player_id;
-        row.insertCell(1).textContent = name;
-        row.insertCell(2).textContent = balance;
-        row.insertCell(3).textContent = position;
-        const actionCell = row.insertCell(4);
-        const btn = document.createElement('button');
-        btn.textContent = 'Delete';
-        btn.addEventListener('click', () => deletePlayer(player_id, name));
-        actionCell.appendChild(btn);
-    });
-}
-
 async function deletePlayer(playerId, playerName) {
     const msgElement = document.getElementById('deletePlayerMsg');
     if (!confirm(`Delete player "${playerName}" (ID: ${playerId})? This will also remove their game history, turns, and owned properties.`)) {
