@@ -301,6 +301,10 @@ async function fetchAndDisplayPropertyStats() {
     });
 }
 
+function hidePropertyStats() {
+    document.querySelector('#propertyStatsTable tbody').innerHTML = '';
+}
+
 // Query 3: delete player
 async function fetchAndDisplayPlayers() {
     const tableBody = document.querySelector('#playerTable tbody');
@@ -356,6 +360,7 @@ window.onload = function () {
     document.getElementById("addConditionBtn").addEventListener("click", addCondition);
     document.getElementById("searchPlayersBtn").addEventListener("click", searchPlayers);
     document.getElementById("showPropertyStatsBtn").addEventListener("click", fetchAndDisplayPropertyStats);
+    document.getElementById("hidePropertyStatsBtn").addEventListener("click", hidePropertyStats);
 };
 
 // General function to refresh the displayed table data. 
