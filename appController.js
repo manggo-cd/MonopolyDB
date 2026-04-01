@@ -99,6 +99,13 @@ router.get('/players/property-stats', async (req, res) => {
     const stats = await appService.getPlayerPropertyStats();
     res.json({ data: stats });
 });
+
+// Query 8: aggregation with HAVING
+router.get('/games/turns-summary', async (req, res) => {
+    const turns = await appService.getGamesWithMultipleTurns();
+    res.json({ data: turns });
+});
+
 // Query 4: Select Player
 router.post('/players/select', async (req, res) => {
     const { conditions } = req.body;

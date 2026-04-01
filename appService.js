@@ -258,6 +258,22 @@ async function getPlayerPropertyStats() {
     });
 }
 
+// Query 8: aggregation with HAVING - find games where more than 1 turn was played
+async function getGamesWithMultipleTurns() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT game_id, COUNT(*) AS turn_count, ROUND(AVG(dice_roll), 1) AS avg_dice_roll
+             FROM Turn
+             GROUP BY game_id
+             HAVING COUNT(*) > 1
+             ORDER BY game_id`
+        );
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
 module.exports = {
     testOracleConnection,
     fetchDemotableFromDb,
@@ -270,6 +286,7 @@ module.exports = {
     fetchPlayers,
     deletePlayer,
     getPlayerPropertyStats,
+    getGamesWithMultipleTurns,
 
     insertPlayer,
     updatePlayer
