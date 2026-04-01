@@ -410,6 +410,28 @@ function hidePropertyStats() {
     document.querySelector('#propertyStatsTable tbody').innerHTML = '';
 }
 
+// Query 8: aggregation with HAVING - show games with more than 1 turn
+async function fetchAndDisplayTurnSummary() {
+    const tableBody = document.querySelector('#turnSummaryTable tbody');
+
+    const response = await fetch('/games/turns-summary', {
+        method: 'GET'
+    });
+    const responseData = await response.json();
+
+    tableBody.innerHTML = '';
+    responseData.data.forEach(row => {
+        const tr = tableBody.insertRow();
+        tr.insertCell(0).textContent = row[0];
+        tr.insertCell(1).textContent = row[1];
+        tr.insertCell(2).textContent = row[2];
+    });
+}
+
+function hideTurnSummary() {
+    document.querySelector('#turnSummaryTable tbody').innerHTML = '';
+}
+
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
 // Add or remove event listeners based on the desired functionalities.
@@ -429,6 +451,8 @@ window.onload = function () {
     document.getElementById("searchPlayersBtn").addEventListener("click", searchPlayers);
     document.getElementById("showPropertyStatsBtn").addEventListener("click", fetchAndDisplayPropertyStats);
     document.getElementById("hidePropertyStatsBtn").addEventListener("click", hidePropertyStats);
+    document.getElementById("showTurnSummaryBtn").addEventListener("click", fetchAndDisplayTurnSummary);
+    document.getElementById("hideTurnSummaryBtn").addEventListener("click", hideTurnSummary);
 
     // Query 1
     document.getElementById('playerForm').addEventListener('submit', insertPlayer);

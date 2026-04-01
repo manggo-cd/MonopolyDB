@@ -141,6 +141,24 @@
 
     <br><hr><br>
 
+    <!-- Query 8: Aggregation with HAVING - games with more than 1 turn -->
+    <h2>Game Turn Summary</h2>
+    <p>Shows games where more than one turn has been played, along with the average dice roll.</p>
+    <button id="showTurnSummaryBtn">Show Summary</button>
+    <button id="hideTurnSummaryBtn">Hide</button>
+    <table id="turnSummaryTable" border="1">
+        <thead>
+            <tr>
+                <th>Game ID</th>
+                <th>Turns Played</th>
+                <th>Average Dice Roll</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <br><hr><br>
+
     <!-- Query 3: Delete player -->
     <h2>Delete Player</h2>
     <p>Select a player to delete. This will also remove their game history, turns, and owned properties.</p>
