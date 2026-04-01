@@ -32,7 +32,7 @@ async function checkDbConnection() {
             statusElem.textContent = text;
         })
         .catch((error) => {
-            statusElem.textContent = 'connection timed out';  // Adjust error handling if required.
+            statusElem.textContent = 'connection timed out';
         });
 }
 
@@ -137,7 +137,6 @@ async function updateNameDemotable(event) {
 }
 
 // Counts rows in the demotable.
-// Modify the function accordingly if using different aggregate functions or procedures.
 async function countDemotable() {
     const response = await fetch("/count-demotable", {
         method: 'GET'
@@ -154,7 +153,6 @@ async function countDemotable() {
     }
 }
 
-// Fetches data from the Player Table and displays it.
 async function fetchAndDisplayPlayers() {
     const tableElement = document.getElementById('playerTable');
     const tableBody = tableElement.querySelector('tbody');
@@ -171,22 +169,20 @@ async function fetchAndDisplayPlayers() {
     players.forEach(player => {
         const row = tableBody.insertRow();
 
-        row.insertCell(0).textContent = player.player_id;
-        row.insertCell(1).textContent = player.name;
-        row.insertCell(2).textContent = player.balance;
-        row.insertCell(3).textContent = player.position;
+        row.insertCell(0).textContent = player[0];
+        row.insertCell(1).textContent = player[1];
+        row.insertCell(2).textContent = player[2];
+        row.insertCell(3).textContent = player[3];
 
         const actionCell = row.insertCell(4);
         const btn = document.createElement('button');
         btn.textContent = 'Delete';
-
-        btn.addEventListener('click', () => deletePlayer(player.player_id, player.name));
-
+        btn.addEventListener('click', () => deletePlayer(player[0], player[1]));
         actionCell.appendChild(btn);
     });
 }
 
-// Query 1: Insert Player
+// Q1: insert player
 async function insertPlayer(event) {
     event.preventDefault();
 
@@ -211,15 +207,13 @@ async function insertPlayer(event) {
 
     if (responseData.success) {
         messageElement.textContent = "Player inserted successfully!";
-
-        // Refresh table (you’ll define this)
-        fetchPlayerTable();
+        fetchAndDisplayPlayers();
     } else {
         messageElement.textContent = "Error inserting player!";
     }
 }
 
-// Query 2: Update Player
+// Q2: update player
 async function updatePlayer(event) {
     event.preventDefault();
 
@@ -246,13 +240,13 @@ async function updatePlayer(event) {
 
     if (responseData.success) {
         messageElement.textContent = "Player updated successfully!";
-        fetchPlayerTable(); // refresh table
+        fetchAndDisplayPlayers();
     } else {
         messageElement.textContent = "Error updating player!";
     }
 }
 
-// Query 3: Delete Player
+// Q3: delete player
 async function deletePlayer(playerId, playerName) {
     const msgElement = document.getElementById('deletePlayerMsg');
     if (!confirm(`Delete player "${playerName}" (ID: ${playerId})? This will also remove their game history, turns, and owned properties.`)) {
@@ -268,7 +262,7 @@ async function deletePlayer(playerId, playerName) {
     }
 }
 
-// Query 4: Select Player
+// Q4: selection on Player
 async function showAllSelectionPlayers() {
     const tableBody = document.querySelector('#selectionTable tbody');
     const msgElement = document.getElementById('selectionMsg');
@@ -295,12 +289,10 @@ async function showAllSelectionPlayers() {
     }
 }
 
-// search players with whatever conditions the user added
 async function searchPlayers() {
     const tableBody = document.querySelector('#selectionTable tbody');
     const msgElement = document.getElementById('selectionMsg');
 
-    //grab all the condition rows
     const rows = document.querySelectorAll('#conditionsContainer .condition-row');
     const conditions = [];
     for (let i = 0; i < rows.length; i++) {
@@ -340,14 +332,12 @@ async function searchPlayers() {
     }
 }
 
-// adds a condition row when user clicks + Add Condition
 function addCondition() {
     const container = document.getElementById('conditionsContainer');
 
     const row = document.createElement('div');
     row.className = 'condition-row';
 
-    // AND or OR
     const connector = document.createElement('select');
     connector.className = 'condition-connector';
     connector.innerHTML = '<option value="AND">AND</option><option value="OR">OR</option>';
@@ -395,7 +385,155 @@ function hideSelectionPlayers() {
     document.getElementById('selectionMsg').textContent = '';
 }
 
-// Query 7: group by - show property stats per player
+// Q5: projection
+const projectionColumns = [];
+
+function toggleProjectionColumn(checkbox) {
+    const col = checkbox.value;
+    if (checkbox.checked) {
+        projectionColumns.push(col);
+    } else {
+        const idx = projectionColumns.indexOf(col);
+        if (idx > -1) projectionColumns.splice(idx, 1);
+    }
+    renderProjectionOrder();
+}
+
+function swapProjectionColumns(from, to) {
+    const temp = projectionColumns[from];
+    projectionColumns[from] = projectionColumns[to];
+    projectionColumns[to] = temp;
+    renderProjectionOrder();
+}
+
+function renderProjectionOrder() {
+    const container = document.getElementById('projectionColumnOrder');
+    container.innerHTML = '';
+
+    if (projectionColumns.length === 0) {
+        container.textContent = 'No columns selected.';
+        return;
+    }
+
+    projectionColumns.forEach((col, i) => {
+        const item = document.createElement('div');
+        item.style.display = 'inline-flex';
+        item.style.alignItems = 'center';
+        item.style.gap = '4px';
+        item.style.marginBottom = '4px';
+
+        const label = document.createElement('span');
+        label.textContent = `${i + 1}. ${col.charAt(0).toUpperCase() + col.slice(1)}`;
+        item.appendChild(label);
+
+        if (i > 0) {
+            const up = document.createElement('button');
+            up.textContent = '\u25B2';
+            up.type = 'button';
+            up.addEventListener('click', () => swapProjectionColumns(i, i - 1));
+            item.appendChild(up);
+        }
+        if (i < projectionColumns.length - 1) {
+            const down = document.createElement('button');
+            down.textContent = '\u25BC';
+            down.type = 'button';
+            down.addEventListener('click', () => swapProjectionColumns(i, i + 1));
+            item.appendChild(down);
+        }
+
+        container.appendChild(item);
+        container.appendChild(document.createTextNode('  '));
+    });
+}
+
+async function fetchBoardPositions() {
+    const msgEl = document.getElementById('projectionMsg');
+    const thead = document.querySelector('#projectionResult thead tr');
+    const tbody = document.querySelector('#projectionResult tbody');
+    msgEl.textContent = '';
+    thead.innerHTML = '';
+    tbody.innerHTML = '';
+
+    if (projectionColumns.length === 0) {
+        msgEl.textContent = 'Please select at least one column.';
+        return;
+    }
+
+    const params = projectionColumns.map(c => `columns=${encodeURIComponent(c)}`).join('&');
+    const response = await fetch(`/board-positions?${params}`);
+    const body = await response.json();
+
+    if (!body.success) {
+        msgEl.textContent = body.message || 'Failed to load board positions.';
+        return;
+    }
+
+    if (body.data.rows.length === 0) {
+        msgEl.textContent = 'No results found.';
+        return;
+    }
+
+    body.data.columns.forEach(col => {
+        const th = document.createElement('th');
+        th.textContent = col.charAt(0).toUpperCase() + col.slice(1);
+        thead.appendChild(th);
+    });
+
+    body.data.rows.forEach(row => {
+        const tr = tbody.insertRow();
+        row.forEach((val, idx) => {
+            tr.insertCell(idx).textContent = val !== null ? val : '';
+        });
+    });
+}
+
+// Q6: join
+async function loadColourOptions() {
+    const select = document.getElementById('colourSelect');
+    const response = await fetch('/colours');
+    const body = await response.json();
+    body.data.forEach(row => {
+        const option = document.createElement('option');
+        option.value = row[0];
+        option.textContent = row[0];
+        select.appendChild(option);
+    });
+}
+
+async function fetchPlayerProperties() {
+    const colour = document.getElementById('colourSelect').value;
+    const msgEl = document.getElementById('joinMsg');
+    const tbody = document.querySelector('#joinResult tbody');
+    msgEl.textContent = '';
+    tbody.innerHTML = '';
+
+    if (!colour) {
+        msgEl.textContent = 'Please select a colour.';
+        return;
+    }
+
+    const response = await fetch(`/player-properties?colour=${encodeURIComponent(colour)}`);
+    const body = await response.json();
+
+    if (!body.success) {
+        msgEl.textContent = body.message || 'Failed to load property data.';
+        return;
+    }
+
+    if (body.data.length === 0) {
+        msgEl.textContent = 'No properties found for this colour.';
+        return;
+    }
+
+    body.data.forEach(row => {
+        const tr = tbody.insertRow();
+        row.forEach((val, idx) => {
+            tr.insertCell(idx).textContent = val;
+        });
+    });
+}
+
+// Q7: group by
 async function fetchAndDisplayPropertyStats() {
     const tableBody = document.querySelector('#propertyStatsTable tbody');
 
@@ -418,7 +556,7 @@ function hidePropertyStats() {
     document.querySelector('#propertyStatsTable tbody').innerHTML = '';
 }
 
-// Query 8: aggregation with HAVING - show games with more than 1 turn
+// Q8: aggregation with HAVING
 async function fetchAndDisplayTurnSummary() {
     const tableBody = document.querySelector('#turnSummaryTable tbody');
 
@@ -440,13 +578,59 @@ function hideTurnSummary() {
     document.querySelector('#turnSummaryTable tbody').innerHTML = '';
 }
 
+// Q9: nested aggregation
+async function fetchHighestAvgRoll() {
+    const msgEl = document.getElementById('nestedAggMsg');
+    const tbody = document.querySelector('#nestedAggResult tbody');
+    msgEl.textContent = '';
+    tbody.innerHTML = '';
+
+    const response = await fetch('/highest-avg-roll');
+    const body = await response.json();
+
+    if (!body.success || body.data.length === 0) {
+        msgEl.textContent = 'No turn data available.';
+        return;
+    }
+
+    body.data.forEach(row => {
+        const tr = tbody.insertRow();
+        tr.insertCell(0).textContent = row[0];
+        tr.insertCell(1).textContent = row[1];
+    });
+}
+
+// Q10: division
+async function fetchPlayersAllColours() {
+    const msgEl = document.getElementById('divisionMsg');
+    const tbody = document.querySelector('#divisionResult tbody');
+    msgEl.textContent = '';
+    tbody.innerHTML = '';
+
+    const response = await fetch('/players-all-colours');
+    const body = await response.json();
+
+    if (!body.success || body.data.length === 0) {
+        msgEl.textContent = 'No player owns properties in every colour group.';
+        return;
+    }
+
+    body.data.forEach(row => {
+        const tr = tbody.insertRow();
+        tr.insertCell(0).textContent = row[0];
+        tr.insertCell(1).textContent = row[1];
+    });
+}
+
+
 // ---------------------------------------------------------------
-// Initializes the webpage functionalities.
-// Add or remove event listeners based on the desired functionalities.
+
 window.onload = function () {
     checkDbConnection();
     fetchTableData();
     fetchAndDisplayPlayers();
+    loadColourOptions();
+    renderProjectionOrder();
 
     document.getElementById("resetDemotable").addEventListener("click", resetDemotable);
     document.getElementById("insertDemotable").addEventListener("submit", insertDemotable);
@@ -457,20 +641,19 @@ window.onload = function () {
     document.getElementById("hideAllPlayersBtn").addEventListener("click", hideSelectionPlayers);
     document.getElementById("addConditionBtn").addEventListener("click", addCondition);
     document.getElementById("searchPlayersBtn").addEventListener("click", searchPlayers);
+
+    document.getElementById("projectionViewBtn").addEventListener("click", fetchBoardPositions);
+    document.getElementById("joinSearchBtn").addEventListener("click", fetchPlayerProperties);
+
     document.getElementById("showPropertyStatsBtn").addEventListener("click", fetchAndDisplayPropertyStats);
     document.getElementById("hidePropertyStatsBtn").addEventListener("click", hidePropertyStats);
     document.getElementById("showTurnSummaryBtn").addEventListener("click", fetchAndDisplayTurnSummary);
     document.getElementById("hideTurnSummaryBtn").addEventListener("click", hideTurnSummary);
 
-    // Query 1
-    document.getElementById('playerForm').addEventListener('submit', insertPlayer);
-
-    // Query 2
-    document.getElementById('updatePlayerForm').addEventListener('submit', updatePlayer);
+    document.getElementById("nestedAggBtn").addEventListener("click", fetchHighestAvgRoll);
+    document.getElementById("divisionBtn").addEventListener("click", fetchPlayersAllColours);
 };
 
-// General function to refresh the displayed table data. 
-// You can invoke this after any table-modifying operation to keep consistency.
 function fetchTableData() {
     fetchAndDisplayUsers();
 }

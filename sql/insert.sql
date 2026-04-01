@@ -139,6 +139,36 @@ INSERT INTO CardSpaceDraws (space_id, card_id) VALUES (8, 3);
 INSERT INTO CardSpaceDraws (space_id, card_id) VALUES (9, 4);
 INSERT INTO CardSpaceDraws (space_id, card_id) VALUES (10, 5);
 
+-- Additional properties (multiple per colour for meaningful aggregation/division)
+INSERT INTO Property (property_id, colour, cost) VALUES (106, 'Brown',     65);
+INSERT INTO Property (property_id, colour, cost) VALUES (107, 'LightBlue', 110);
+INSERT INTO Property (property_id, colour, cost) VALUES (108, 'Pink',      150);
+INSERT INTO Property (property_id, colour, cost) VALUES (109, 'Orange',    190);
+INSERT INTO Property (property_id, colour, cost) VALUES (110, 'Red',       230);
+INSERT INTO Property (property_id, colour, cost) VALUES (111, 'Brown',     55);
+INSERT INTO Property (property_id, colour, cost) VALUES (112, 'LightBlue', 95);
+
+-- Additional ownership (Alex owns all 5 colour groups; others partial)
+INSERT INTO Owns (property_id, player_id) VALUES (107, 1);
+INSERT INTO Owns (property_id, player_id) VALUES (108, 1);
+INSERT INTO Owns (property_id, player_id) VALUES (109, 1);
+INSERT INTO Owns (property_id, player_id) VALUES (110, 1);
+INSERT INTO Owns (property_id, player_id) VALUES (106, 2);
+INSERT INTO Owns (property_id, player_id) VALUES (111, 3);
+INSERT INTO Owns (property_id, player_id) VALUES (112, 4);
+
+-- Additional houses
+INSERT INTO House (property_id, house_id) VALUES (106, 1);
+INSERT INTO House (property_id, house_id) VALUES (107, 1);
+INSERT INTO House (property_id, house_id) VALUES (101, 2);
+
+-- Additional turns (multiple per game for meaningful averages)
+INSERT INTO Turn (turn_id, player_id, game_id, dice_roll, time) VALUES (6,  1, 1, 10, TIMESTAMP '2026-03-01 10:10:00');
+INSERT INTO Turn (turn_id, player_id, game_id, dice_roll, time) VALUES (7,  2, 1, 4,  TIMESTAMP '2026-03-01 10:12:00');
+INSERT INTO Turn (turn_id, player_id, game_id, dice_roll, time) VALUES (8,  3, 2, 11, TIMESTAMP '2026-03-01 11:40:00');
+INSERT INTO Turn (turn_id, player_id, game_id, dice_roll, time) VALUES (9,  4, 2, 3,  TIMESTAMP '2026-03-01 11:42:00');
+INSERT INTO Turn (turn_id, player_id, game_id, dice_roll, time) VALUES (10, 5, 3, 6,  TIMESTAMP '2026-03-02 09:25:00');
+
 COMMIT;
 
 PROMPT Seed data insertion complete.

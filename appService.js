@@ -142,7 +142,7 @@ async function countDemotable() {
     });
 }
 
-// Query 1: Insert Player
+// Q1: insert player
 async function insertPlayer(name, balance, position) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -158,7 +158,7 @@ async function insertPlayer(name, balance, position) {
     });
 }
 
-// Query 2: Update Player
+// Q2: update player
 async function updatePlayer(player_id, name, balance, position) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -175,49 +175,7 @@ async function updatePlayer(player_id, name, balance, position) {
     });
 }
 
-// Query 4: Select Player
-async function selectPlayers(conditions) {
-    return await withOracleDB(async (connection) => {
-        let whereStr = '';
-        const binds = {};
-        let condCount = 0;
-
-        const allowedFields = ['player_id', 'name', 'balance', 'position'];
-        const allowedOperators = ['=', '!=', '>', '<', '>=', '<='];
-
-        for (let i = 0; i < conditions.length; i++) {
-            const cond = conditions[i];
-            const validField = allowedFields.includes(cond.field);
-            const validOperator = allowedOperators.includes(cond.operator);
-            if (!validField || !validOperator || cond.value === '') {
-                continue;
-            }
-            // first condition starts the WHERE, after that we add AND or OR
-            if (condCount === 0) {
-                whereStr = 'WHERE ';
-            } else if (cond.connector === 'OR') {
-                whereStr += ' OR ';
-            } else {
-                whereStr += ' AND ';
-            }
-            // use bind variables instead of putting value directly in query
-            whereStr += cond.field + ' ' + cond.operator + ' :val' + condCount;
-            binds['val' + condCount] = cond.value;
-            condCount++;
-        }
-
-        const result = await connection.execute(
-            'SELECT player_id, name, balance, position FROM Player ' + whereStr + ' ORDER BY player_id',
-            binds
-        );
-        return result.rows;
-    }).catch((err) => {
-        console.error('selectPlayers error:', err);
-        return [];
-    });
-}
-
-// Query 3:  delete player
+// Q3: delete player
 async function fetchPlayers() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute('SELECT player_id, name, balance, position FROM Player ORDER BY player_id');
@@ -241,7 +199,92 @@ async function deletePlayer(playerId) {
     });
 }
 
-// Query 7: group by - get property count and total value for each player
+// Q4: selection on Player
+async function selectPlayers(conditions) {
+    return await withOracleDB(async (connection) => {
+        let whereStr = '';
+        const binds = {};
+        let condCount = 0;
+
+        const allowedFields = ['player_id', 'name', 'balance', 'position'];
+        const allowedOperators = ['=', '!=', '>', '<', '>=', '<='];
+
+        for (let i = 0; i < conditions.length; i++) {
+            const cond = conditions[i];
+            const validField = allowedFields.includes(cond.field);
+            const validOperator = allowedOperators.includes(cond.operator);
+            if (!validField || !validOperator || cond.value === '') {
+                continue;
+            }
+            if (condCount === 0) {
+                whereStr = 'WHERE ';
+            } else if (cond.connector === 'OR') {
+                whereStr += ' OR ';
+            } else {
+                whereStr += ' AND ';
+            }
+            whereStr += cond.field + ' ' + cond.operator + ' :val' + condCount;
+            binds['val' + condCount] = cond.value;
+            condCount++;
+        }
+
+        const result = await connection.execute(
+            'SELECT player_id, name, balance, position FROM Player ' + whereStr + ' ORDER BY player_id',
+            binds
+        );
+        return result.rows;
+    }).catch((err) => {
+        console.error('selectPlayers error:', err);
+        return [];
+    });
+}
+
+// Q5: projection on Board_Position
+async function projectBoardPositions(columns) {
+    return await withOracleDB(async (connection) => {
+        const allowed = ['position', 'name', 'icon'];
+        const safe = columns.filter(c => allowed.includes(c));
+        if (safe.length === 0) return { columns: [], rows: [] };
+
+        const query = `SELECT ${safe.join(', ')} FROM Board_Position ORDER BY position`;
+        const result = await connection.execute(query);
+        return { columns: safe, rows: result.rows };
+    }).catch(() => {
+        return { columns: [], rows: [] };
+    });
+}
+
+// Q6: join across Player, Owns, Property, ColourRent
+async function fetchColours() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            'SELECT colour FROM ColourRent ORDER BY colour'
+        );
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+async function fetchPlayerPropertiesByColour(colour) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT p.name, pr.property_id, pr.colour, pr.cost, cr.rent
+             FROM Player p
+             JOIN Owns o ON p.player_id = o.player_id
+             JOIN Property pr ON o.property_id = pr.property_id
+             JOIN ColourRent cr ON pr.colour = cr.colour
+             WHERE cr.colour = :colour
+             ORDER BY p.name, pr.property_id`,
+            [colour]
+        );
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+// Q7: group by — property count and total value per player
 async function getPlayerPropertyStats() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -258,7 +301,7 @@ async function getPlayerPropertyStats() {
     });
 }
 
-// Query 8: aggregation with HAVING - find games where more than 1 turn was played
+// Q8: aggregation with HAVING — games where more than 1 turn was played
 async function getGamesWithMultipleTurns() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -274,6 +317,49 @@ async function getGamesWithMultipleTurns() {
     });
 }
 
+// Q9: nested aggregation with GROUP BY
+async function fetchGameWithHighestAvgRoll() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT t.game_id, ROUND(AVG(t.dice_roll), 2) AS avg_roll
+             FROM Turn t
+             GROUP BY t.game_id
+             HAVING AVG(t.dice_roll) >= ALL (
+                 SELECT AVG(t2.dice_roll)
+                 FROM Turn t2
+                 GROUP BY t2.game_id
+             )`
+        );
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+// Q10: division
+async function fetchPlayersOwningAllColours() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT p.player_id, p.name
+             FROM Player p
+             WHERE NOT EXISTS (
+                 SELECT cr.colour
+                 FROM ColourRent cr
+                 WHERE cr.colour IN (SELECT colour FROM Property)
+                 MINUS
+                 SELECT pr.colour
+                 FROM Owns o
+                 JOIN Property pr ON o.property_id = pr.property_id
+                 WHERE o.player_id = p.player_id
+             )`
+        );
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+
 module.exports = {
     testOracleConnection,
     fetchDemotableFromDb,
@@ -282,12 +368,19 @@ module.exports = {
     updateNameDemotable,
     countDemotable,
 
-    selectPlayers,
+    insertPlayer,
+    updatePlayer,
     fetchPlayers,
     deletePlayer,
+    selectPlayers,
+
+    projectBoardPositions,
+    fetchColours,
+    fetchPlayerPropertiesByColour,
+
     getPlayerPropertyStats,
     getGamesWithMultipleTurns,
 
-    insertPlayer,
-    updatePlayer
+    fetchGameWithHighestAvgRoll,
+    fetchPlayersOwningAllColours
 };
