@@ -175,30 +175,6 @@ async function updatePlayer(player_id, name, balance, position) {
     });
 }
 
-// Query 3: Delete Player
-async function fetchPlayers() {
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute('SELECT player_id, name, balance, position FROM Player ORDER BY player_id');
-        return result.rows;
-    }).catch(() => {
-        return [];
-    });
-}
-
-async function deletePlayer(playerId) {
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute(
-            'DELETE FROM Player WHERE player_id = :playerId',
-            [playerId],
-            { autoCommit: true }
-        );
-        return result.rowsAffected && result.rowsAffected > 0;
-    }).catch((err) => {
-        console.error('deletePlayer error:', err);
-        return false;
-    });
-}
-
 // Query 4: Select Player
 async function selectPlayers(conditions) {
     return await withOracleDB(async (connection) => {
@@ -241,6 +217,47 @@ async function selectPlayers(conditions) {
     });
 }
 
+// Query 3:  delete player
+async function fetchPlayers() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT player_id, name, balance, position FROM Player ORDER BY player_id');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+async function deletePlayer(playerId) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            'DELETE FROM Player WHERE player_id = :playerId',
+            [playerId],
+            { autoCommit: true }
+        );
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch((err) => {
+        console.error('deletePlayer error:', err);
+        return false;
+    });
+}
+
+// Query 7: group by - get property count and total value for each player
+async function getPlayerPropertyStats() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT p.player_id, p.name, COUNT(o.property_id) AS property_count, COALESCE(SUM(pr.cost), 0) AS total_value
+             FROM Player p
+             LEFT JOIN Owns o ON p.player_id = o.player_id
+             LEFT JOIN Property pr ON o.property_id = pr.property_id
+             GROUP BY p.player_id, p.name
+             ORDER BY p.player_id`
+        );
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
 module.exports = {
     testOracleConnection,
     fetchDemotableFromDb,
@@ -252,6 +269,7 @@ module.exports = {
     selectPlayers,
     fetchPlayers,
     deletePlayer,
+    getPlayerPropertyStats,
 
     insertPlayer,
     updatePlayer

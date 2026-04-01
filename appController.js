@@ -94,6 +94,11 @@ router.delete('/players/:id', async (req, res) => {
     }
 });
 
+// Query 7: group by
+router.get('/players/property-stats', async (req, res) => {
+    const stats = await appService.getPlayerPropertyStats();
+    res.json({ data: stats });
+
 // Query 4: Select Player
 router.post('/players/select', async (req, res) => {
     const { conditions } = req.body;
