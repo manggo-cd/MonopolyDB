@@ -208,6 +208,23 @@ async function deletePlayer(playerId) {
     });
 }
 
+// Query 7: group by - get property count and total value for each player
+async function getPlayerPropertyStats() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT p.player_id, p.name, COUNT(o.property_id) AS property_count, COALESCE(SUM(pr.cost), 0) AS total_value
+             FROM Player p
+             LEFT JOIN Owns o ON p.player_id = o.player_id
+             LEFT JOIN Property pr ON o.property_id = pr.property_id
+             GROUP BY p.player_id, p.name
+             ORDER BY p.player_id`
+        );
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
 module.exports = {
     testOracleConnection,
     fetchDemotableFromDb,
@@ -217,5 +234,6 @@ module.exports = {
     countDemotable,
     selectPlayers,
     fetchPlayers,
-    deletePlayer
+    deletePlayer,
+    getPlayerPropertyStats
 };
