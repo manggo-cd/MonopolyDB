@@ -627,31 +627,35 @@ async function fetchPlayersAllColours() {
 
 window.onload = function () {
     checkDbConnection();
-    fetchTableData();
-    fetchAndDisplayPlayers();
-    loadColourOptions();
-    renderProjectionOrder();
 
-    document.getElementById("resetDemotable").addEventListener("click", resetDemotable);
-    document.getElementById("insertDemotable").addEventListener("submit", insertDemotable);
-    document.getElementById("updataNameDemotable").addEventListener("submit", updateNameDemotable);
-    document.getElementById("countDemotable").addEventListener("click", countDemotable);
+    if (document.getElementById('demotable')) fetchTableData();
+    if (document.getElementById('playerTable')) fetchAndDisplayPlayers();
+    if (document.getElementById('colourSelect')) loadColourOptions();
+    if (document.getElementById('projectionColumnOrder')) renderProjectionOrder();
 
-    document.getElementById("showAllPlayersBtn").addEventListener("click", showAllSelectionPlayers);
-    document.getElementById("hideAllPlayersBtn").addEventListener("click", hideSelectionPlayers);
-    document.getElementById("addConditionBtn").addEventListener("click", addCondition);
-    document.getElementById("searchPlayersBtn").addEventListener("click", searchPlayers);
+    document.getElementById("resetDemotable")?.addEventListener("click", resetDemotable);
+    document.getElementById("insertDemotable")?.addEventListener("submit", insertDemotable);
+    document.getElementById("updataNameDemotable")?.addEventListener("submit", updateNameDemotable);
+    document.getElementById("countDemotable")?.addEventListener("click", countDemotable);
 
-    document.getElementById("projectionViewBtn").addEventListener("click", fetchBoardPositions);
-    document.getElementById("joinSearchBtn").addEventListener("click", fetchPlayerProperties);
+    document.getElementById("playerForm")?.addEventListener("submit", insertPlayer);
+    document.getElementById("updatePlayerForm")?.addEventListener("submit", updatePlayer);
 
-    document.getElementById("showPropertyStatsBtn").addEventListener("click", fetchAndDisplayPropertyStats);
-    document.getElementById("hidePropertyStatsBtn").addEventListener("click", hidePropertyStats);
-    document.getElementById("showTurnSummaryBtn").addEventListener("click", fetchAndDisplayTurnSummary);
-    document.getElementById("hideTurnSummaryBtn").addEventListener("click", hideTurnSummary);
+    document.getElementById("showAllPlayersBtn")?.addEventListener("click", showAllSelectionPlayers);
+    document.getElementById("hideAllPlayersBtn")?.addEventListener("click", hideSelectionPlayers);
+    document.getElementById("addConditionBtn")?.addEventListener("click", addCondition);
+    document.getElementById("searchPlayersBtn")?.addEventListener("click", searchPlayers);
 
-    document.getElementById("nestedAggBtn").addEventListener("click", fetchHighestAvgRoll);
-    document.getElementById("divisionBtn").addEventListener("click", fetchPlayersAllColours);
+    document.getElementById("projectionViewBtn")?.addEventListener("click", fetchBoardPositions);
+    document.getElementById("joinSearchBtn")?.addEventListener("click", fetchPlayerProperties);
+
+    document.getElementById("showPropertyStatsBtn")?.addEventListener("click", fetchAndDisplayPropertyStats);
+    document.getElementById("hidePropertyStatsBtn")?.addEventListener("click", hidePropertyStats);
+    document.getElementById("showTurnSummaryBtn")?.addEventListener("click", fetchAndDisplayTurnSummary);
+    document.getElementById("hideTurnSummaryBtn")?.addEventListener("click", hideTurnSummary);
+
+    document.getElementById("nestedAggBtn")?.addEventListener("click", fetchHighestAvgRoll);
+    document.getElementById("divisionBtn")?.addEventListener("click", fetchPlayersAllColours);
 };
 
 function fetchTableData() {

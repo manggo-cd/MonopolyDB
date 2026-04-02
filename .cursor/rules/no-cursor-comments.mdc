@@ -1,0 +1,10 @@
+---
+description: Never add Cursor/AI tool references in commits or code
+alwaysApply: true
+---
+
+# No Cursor/AI References
+
+- NEVER add trailers, comments, or metadata mentioning Cursor, Copilot, or any AI tool in commits, code, or generated files.
+- Commit messages must be plain with no --trailer flags referencing tools.
+- No comments in code that reference AI assistance.
