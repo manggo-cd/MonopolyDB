@@ -35,11 +35,11 @@ This guide explains how to run the app locally while connecting to the UBC Oracl
 
 ## 1) Prerequisites
 
-- Windows machine (instructions below use PowerShell)
+- Windows machine (instructions below use PowerShell), or macOS with Terminal
 - Access to UBC remote server and Oracle account (`ora_<cwl>@stu`)
 - Node.js installed (`node --version` should work)
-- Oracle Instant Client (64-bit, Basic Light ZIP) extracted locally
-- Microsoft Visual C++ Redistributable installed (required by Oracle client DLLs)
+- Oracle Instant Client (64-bit, Basic Light ZIP) extracted locally; on macOS use the Oracle Instant Client build for your Mac (Intel vs Apple Silicon)
+- On Windows: Microsoft Visual C++ Redistributable installed (required by Oracle client DLLs)
 
 ## 2) Install Node packages
 
@@ -48,6 +48,8 @@ From project root:
 ```powershell
 npm install
 ```
+
+macOS: same command in Terminal.
 
 ## 3) Configure `.env` (no hardcoded personal values in repo)
 
@@ -77,6 +79,8 @@ Run:
 When prompted, enter the absolute path of your extracted Instant Client folder.  
 This generates/updates `local-start.cmd`.
 
+macOS: `./scripts/mac/instantclient-setup.sh` (creates `local-start.sh`). `chmod +x local-start.sh scripts/mac/db-tunnel.sh` if needed.
+
 ## 5) Start DB tunnel (Terminal A)
 
 Run and keep this terminal open:
@@ -84,6 +88,7 @@ Run and keep this terminal open:
 ```powershell
 .\scripts\win\db-tunnel.cmd
 ```
+macOS: `sh ./scripts/mac/db-tunnel.sh`
 
 This script:
 - opens SSH tunnel to UBC DB host
@@ -103,6 +108,8 @@ Expected healthy output:
 
 If you see `ORA-00942` at first launch in the sample app, that is expected for demo table initialization. Use the reset button in UI for demo flow.
 
+macOS: `./local-start.sh`
+
 ## 7) Load Monopoly SQL schema + seed data (remote SQL*Plus)
 
 Even with local app deployment, the course database is remote. Use SQL*Plus on remote server for schema/data setup.
@@ -114,6 +121,8 @@ ssh <your_cwl>@remote.students.cs.ubc.ca "mkdir -p ~/CPSC304-Monopoly"
 scp -r ".\sql" <your_cwl>@remote.students.cs.ubc.ca:~/CPSC304-Monopoly/
 ssh <your_cwl>@remote.students.cs.ubc.ca
 ```
+
+macOS Terminal: same three commands, but use `scp -r ./sql ...` instead of `.\sql`.
 
 Then on remote:
 
@@ -151,7 +160,7 @@ Success criteria:
 
 ## 9) Common issues
 
-- `DPI-1047`: Instant Client not found in runtime path. Re-run `instantclient-setup.cmd`, verify path and VC++ redistributable install.
+- `DPI-1047`: Instant Client not found in runtime path. Re-run the setup script for your OS (`instantclient-setup.cmd` or `scripts/mac/instantclient-setup.sh`); on Windows verify VC++ redistributable.
 - `ORA-12154`: malformed connect string (commonly whitespace in `.env`) or tunnel not active.
 - `ORA-01017`: wrong Oracle username/password.
 - `SP2-0310`: SQL*Plus cannot find script path; use full absolute path.
