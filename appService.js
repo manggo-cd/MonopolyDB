@@ -145,15 +145,22 @@ async function countDemotable() {
 // Q1: insert player
 async function insertPlayer(name, balance, position) {
     return await withOracleDB(async (connection) => {
+        const bal = Number(balance);
+        const pos = Number(position);
+        if (name === undefined || name === '' || Number.isNaN(bal) || Number.isNaN(pos)) {
+            return false;
+        }
         const result = await connection.execute(
-            `INSERT INTO PLAYER (name, balance, position) 
-             VALUES (:name, :balance, :position)`,
-            [name, balance, position],
+            `INSERT INTO Player (player_id, name, balance, position)
+             SELECT NVL(MAX(player_id), 0) + 1, :name, :balance, :position
+             FROM Player`,
+            { name, balance: bal, position: pos },
             { autoCommit: true }
         );
 
         return result.rowsAffected && result.rowsAffected > 0;
-    }).catch(() => {
+    }).catch((err) => {
+        console.error('insertPlayer error:', err);
         return false;
     });
 }
