@@ -1,110 +1,70 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Monopoly — Setup</title>
+    <link rel="stylesheet" href="/css/home.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <h1>Monopoly</h1>
+      <p class="tagline">Pass-and-play, classic rules, no banker required.</p>
+    </header>
 
-<head>
-    <meta charset="UTF-8">
-    <!-- This meta tag ensures that the website renders correctly across different device sizes, enhancing mobile responsiveness. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <main class="setup">
+      <section class="card">
+        <h2>New game</h2>
 
-    <link rel="stylesheet" href="styles.css">
+        <form id="setup-form" novalidate>
+          <fieldset class="row">
+            <legend>Players</legend>
+            <div class="players-toolbar">
+              <label for="player-count">Number of players</label>
+              <select id="player-count" name="player-count">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4" selected>4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+              </select>
+            </div>
+            <ol id="player-list" class="player-list"></ol>
+          </fieldset>
 
-    <title>Monopoly Tracker</title>
+          <fieldset class="row">
+            <legend>Rules</legend>
+            <label class="inline">
+              <span>Starting cash</span>
+              <input
+                type="number"
+                id="starting-cash"
+                name="starting-cash"
+                min="500"
+                step="50"
+                value="1500"
+              />
+            </label>
+            <label class="inline checkbox">
+              <input type="checkbox" id="free-parking-jackpot" name="free-parking-jackpot" />
+              <span>Free Parking jackpot (taxes &amp; fees pool there)</span>
+            </label>
+          </fieldset>
 
-    <style>
-        body {
-            background-image: url('image1.png'), url('image2.png');
-            background-repeat: no-repeat, no-repeat;
-            background-position: 50px center, calc(100% - 50px) center;
-            background-attachment: fixed, fixed;
-            background-size: 300px auto, 300px auto;
-        }
-    </style>
-</head>
+          <div class="actions">
+            <button type="submit" class="primary">Start game</button>
+          </div>
+        </form>
+      </section>
 
-<body>
-    <!-- ===================================================================================== -->
-    <!-- Display the current status of the database connection. 
-         !!HERE TO HELP U DEBUGGING, NOT REQUIRED IN YOUR OWN PROJECT!!
-         -->
-    <h3>Database Connection Status:
-        <!-- An in-line placeholder to display connection status. -->
-        <span id="dbStatus"> </span>
-        <!-- A loading GIF, will be hided once get the status. -->
-        <img id="loadingGif" class="loading-gif" src="loading_100px.gif" alt="Loading...">
-    </h3>
+      <section class="card" id="saved-games-card" hidden>
+        <h2>Saved games</h2>
+        <ul id="saved-games-list" class="saved-games"></ul>
+      </section>
+    </main>
 
-    <div style="text-align: center;">
-        <h1>welcome to monopoly tracker!</h1>
-        <button onclick="window.location.href='index.html'">Home</button>
-        <button onclick="window.location.href='players.html'">Players</button>
-        <button onclick="window.location.href='properties.html'">Properties</button>
-    </div>
-
-    <br>
-    <hr><br>
-
-    <!-- Q5: projection on Board_Position -->
-    <h2>View Board Positions</h2>
-    <p>Choose which details to display and arrange their order.</p>
-    <div id="projectionCheckboxes">
-        <label><input type="checkbox" value="position" onchange="toggleProjectionColumn(this)">
-            Position</label>&nbsp;&nbsp;
-        <label><input type="checkbox" value="name" onchange="toggleProjectionColumn(this)"> Name</label>&nbsp;&nbsp;
-        <label><input type="checkbox" value="icon" onchange="toggleProjectionColumn(this)"> Icon</label>
-    </div>
-    <p><strong>Column order:</strong></p>
-    <div id="projectionColumnOrder">No columns selected.</div>
-    <br>
-    <button id="projectionViewBtn">View</button>
-    <div id="projectionMsg"></div>
-    <table id="projectionResult">
-        <thead>
-            <tr></tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    <br>
-    <hr><br>
-
-    <!-- Query 8: Aggregation with Having -->
-    <h2>Game Turn Summary</h2>
-    <p>Shows games where more than one turn has been played, along with the average dice roll.</p>
-    <button id="showTurnSummaryBtn">Show Summary</button>
-    <button id="hideTurnSummaryBtn">Hide</button>
-    <table id="turnSummaryTable">
-        <thead>
-            <tr>
-                <th>Game ID</th>
-                <th>Turns Played</th>
-                <th>Average Dice Roll</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    <br>
-    <hr><br>
-
-    <!-- Query 9: Nested Aggregation -->
-    <h2>Game With Highest Average Dice Roll</h2>
-    <p>Finds the game(s) where players rolled the highest on average.</p>
-    <button id="nestedAggBtn">Find</button>
-    <div id="nestedAggMsg"></div>
-    <table id="nestedAggResult">
-        <thead>
-            <tr>
-                <th>Game ID</th>
-                <th>Average Roll</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    <br>
-    <hr><br>
-
-    <script src="scripts.js"></script>
-</body>
-
+    <script type="module" src="/js/ui/home.js"></script>
+  </body>
 </html>

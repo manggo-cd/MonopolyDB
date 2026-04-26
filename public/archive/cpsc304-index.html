@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- This meta tag ensures that the website renders correctly across different device sizes, enhancing mobile responsiveness. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <title>Monopoly Tracker</title>
+
+    <style>
+        body {
+            background-image: url('image1.png'), url('image2.png');
+            background-repeat: no-repeat, no-repeat;
+            background-position: 50px center, calc(100% - 50px) center;
+            background-attachment: fixed, fixed;
+            background-size: 300px auto, 300px auto;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ===================================================================================== -->
+    <!-- Display the current status of the database connection. 
+         !!HERE TO HELP U DEBUGGING, NOT REQUIRED IN YOUR OWN PROJECT!!
+         -->
+    <h3>Database Connection Status:
+        <!-- An in-line placeholder to display connection status. -->
+        <span id="dbStatus"> </span>
+        <!-- A loading GIF, will be hided once get the status. -->
+        <img id="loadingGif" class="loading-gif" src="loading_100px.gif" alt="Loading...">
+    </h3>
+
+    <div style="text-align: center;">
+        <h1>welcome to monopoly tracker!</h1>
+        <button onclick="window.location.href='index.html'">Home</button>
+        <button onclick="window.location.href='players.html'">Players</button>
+        <button onclick="window.location.href='properties.html'">Properties</button>
+    </div>
+
+    <br>
+    <hr><br>
+
+    <!-- Q5: projection on Board_Position -->
+    <h2>View Board Positions</h2>
+    <p>Choose which details to display and arrange their order.</p>
+    <div id="projectionCheckboxes">
+        <label><input type="checkbox" value="position" onchange="toggleProjectionColumn(this)">
+            Position</label>&nbsp;&nbsp;
+        <label><input type="checkbox" value="name" onchange="toggleProjectionColumn(this)"> Name</label>&nbsp;&nbsp;
+        <label><input type="checkbox" value="icon" onchange="toggleProjectionColumn(this)"> Icon</label>
+    </div>
+    <p><strong>Column order:</strong></p>
+    <div id="projectionColumnOrder">No columns selected.</div>
+    <br>
+    <button id="projectionViewBtn">View</button>
+    <div id="projectionMsg"></div>
+    <table id="projectionResult">
+        <thead>
+            <tr></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <br>
+    <hr><br>
+
+    <!-- Query 8: Aggregation with Having -->
+    <h2>Game Turn Summary</h2>
+    <p>Shows games where more than one turn has been played, along with the average dice roll.</p>
+    <button id="showTurnSummaryBtn">Show Summary</button>
+    <button id="hideTurnSummaryBtn">Hide</button>
+    <table id="turnSummaryTable">
+        <thead>
+            <tr>
+                <th>Game ID</th>
+                <th>Turns Played</th>
+                <th>Average Dice Roll</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <br>
+    <hr><br>
+
+    <!-- Query 9: Nested Aggregation -->
+    <h2>Game With Highest Average Dice Roll</h2>
+    <p>Finds the game(s) where players rolled the highest on average.</p>
+    <button id="nestedAggBtn">Find</button>
+    <div id="nestedAggMsg"></div>
+    <table id="nestedAggResult">
+        <thead>
+            <tr>
+                <th>Game ID</th>
+                <th>Average Roll</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <br>
+    <hr><br>
+
+    <script src="scripts.js"></script>
+</body>
+
+</html>

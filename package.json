@@ -1,15 +1,13 @@
 {
-  "name": "node_demo_project",
-  "version": "1.0.0",
-  "description": "The sample Node.js project for CPSC304.",
-  "main": "server.js",
-  "keywords": [],
-  "author": {
-    "name": "Zoe Yuan"
+  "name": "monopoly-game",
+  "version": "0.1.0",
+  "description": "A browser-based, hot-seat Monopoly game. Pure static site, no backend.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx --yes serve public -l 3000",
+    "start": "npx --yes serve public -l 3000"
   },
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.17.3",
-    "oracledb": "^6.7.0"
-  }
+  "author": "manggo-cd",
+  "license": "MIT"
 }

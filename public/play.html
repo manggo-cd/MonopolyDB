@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Monopoly</title>
+    <link rel="stylesheet" href="/css/board.css" />
+    <link rel="stylesheet" href="/css/components.css" />
+  </head>
+  <body>
+    <header class="game-header">
+      <a class="brand" href="/">Monopoly</a>
+      <div class="turn-indicator" id="turn-indicator">Turn 1</div>
+      <div class="header-actions">
+        <button id="btn-sound" class="ghost" type="button" title="Toggle sound">🔊</button>
+        <button id="btn-quit" class="ghost" type="button">Quit to menu</button>
+      </div>
+    </header>
+
+    <main class="game">
+      <section class="board-wrap">
+        <div id="board" class="board" aria-label="Monopoly board"></div>
+      </section>
+
+      <aside class="sidebar">
+        <div id="players-panel" class="panel"></div>
+        <div id="action-panel" class="panel action-panel"></div>
+        <div id="log-panel" class="panel log-panel">
+          <h3>Event log</h3>
+          <ol id="log" class="log"></ol>
+        </div>
+      </aside>
+    </main>
+
+    <div id="modal-root" class="modal-root" hidden></div>
+
+    <script type="module" src="/js/ui/play.js"></script>
+  </body>
+</html>

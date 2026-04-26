@@ -1,0 +1,255 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f3efe7;
+  --bg-elev: #ffffff;
+  --fg: #1d1d1f;
+  --muted: #5a5a5a;
+  --accent: #c8152d;
+  --accent-fg: #ffffff;
+  --border: #d8d2c4;
+  --shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  --radius: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #181613;
+    --bg-elev: #211f1c;
+    --fg: #f3efe7;
+    --muted: #a8a8a8;
+    --border: #353230;
+    --shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Trebuchet MS', system-ui, sans-serif;
+  min-height: 100dvh;
+}
+
+.site-header {
+  text-align: center;
+  padding: 48px 16px 24px;
+}
+
+.site-header h1 {
+  margin: 0;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.tagline {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.setup {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 8px 16px 64px;
+  display: grid;
+  gap: 24px;
+}
+
+.card {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+}
+
+.card h2 {
+  margin: 0 0 16px;
+  font-size: 1.4rem;
+}
+
+fieldset.row {
+  border: none;
+  padding: 0;
+  margin: 0 0 24px;
+}
+
+fieldset.row legend {
+  font-weight: 600;
+  margin-bottom: 12px;
+  padding: 0;
+}
+
+.players-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.player-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.player-list li {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.player-list li .player-num {
+  color: var(--muted);
+  font-weight: 600;
+  text-align: right;
+}
+
+.player-list li input[type='text'] {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 1rem;
+}
+
+.token-picker {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.token-picker button {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: transform 0.1s ease;
+}
+
+.token-picker button[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+  transform: scale(1.05);
+}
+
+.token-picker button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+label.inline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+label.inline.checkbox {
+  cursor: pointer;
+}
+
+label.inline input[type='number'] {
+  width: 120px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 1rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+button.primary {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border: none;
+  padding: 12px 22px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 999px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: filter 0.15s ease;
+}
+
+button.primary:hover {
+  filter: brightness(1.08);
+}
+
+button.primary:active {
+  filter: brightness(0.95);
+}
+
+select,
+input[type='number'],
+input[type='text'] {
+  font-family: inherit;
+}
+
+.saved-games {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.saved-games li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.saved-games button {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  margin-left: 6px;
+}
+
+.saved-games button.danger {
+  color: var(--accent);
+}
+
+.placeholder {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  text-align: center;
+}

@@ -1,170 +1,91 @@
-# Cover Page
+# Monopoly
 
-Milestone: 3
-Date: March 6th, 2026
-Group Number: 119
+A browser-based, single-device hot-seat Monopoly game. Pure static site — no backend, no database.
 
-| Name | Student # | CS Alias | Preferred Email |
-|----------|----------|----------|----------|
-| Katrina Wei  | 11890225  | p6c6v  | katrinawei05@gmail.com |
-| Kevin Xu  | 55195432  | c1a6u  | xukevin2005@gmail.com |
-| Daniel Zhou  | 11504941 | n6e8p  | danielzhou.nc@gmail.com |
+- 2–8 players, classic 40-square US board
+- Full ruleset: dice + doubles, jail, Chance & Community Chest, taxes, rent, monopolies, even build/sell, mortgage with 10% interest, trading, bankruptcy, win condition
+- Hot-seat: pass the device between players
+- Persists in `localStorage`; resume from the home screen, archive finished games
 
-By typing our names and student numbers in the above table, we certify that the work in the attached assignment was performed solely by those whose names and student IDs are included above.
-
-In addition, we indicate that we are fully aware of the rules and consequences of
-plagiarism, as set forth by the Department of Computer Science and the University of
-British Columbia.
-
-# Project Summary
-
-Our project models a complete game session of Monopoly, tracking players, turns, board spaces, property ownership, and financial transactions to accurately reflect Monopoly rules and gameplay. It stores the current game state and historical events, allowing a game session to be tracked and reviewed.
-
-# AI Acknowledgement
-
-- ChatGPT was used to create a draft timeline of the completion of tasks that was edited to fit our project and individual schedules.
-https://chatgpt.com/share/69aa8823-0194-8000-be31-63fbce1b4105
-- ChatGPT was also used to help quickly import our milestone 1/2 docs into .md files.
-https://chatgpt.com/share/69ab9f80-db64-8005-a986-308542c79ba2
-
----
-
-# Local Setup Guide (No Credentials)
-
-This guide explains how to run the app locally while connecting to the UBC Oracle database, and how to load the Monopoly schema/data up to the current project state.
-
-## 1) Prerequisites
-
-- Windows machine (instructions below use PowerShell), or macOS with Terminal
-- Access to UBC remote server and Oracle account (`ora_<cwl>@stu`)
-- Node.js installed (`node --version` should work)
-- Oracle Instant Client (64-bit, Basic Light ZIP) extracted locally; on macOS use the Oracle Instant Client build for your Mac (Intel vs Apple Silicon)
-- On Windows: Microsoft Visual C++ Redistributable installed (required by Oracle client DLLs)
-
-## 2) Install Node packages
-
-From project root:
-
-```powershell
-npm install
-```
-
-macOS: same command in Terminal.
-
-## 3) Configure `.env` (no hardcoded personal values in repo)
-
-Create/update `.env` in project root with the following keys:
-
-```env
-ORACLE_USER=ora_<your_cwl>
-ORACLE_PASS=<your_password>
-ORACLE_HOST=localhost
-ORACLE_PORT=50000
-ORACLE_DBNAME=stu
-PORT=65534
-```
-
-Notes:
-- Do not add spaces after values.
-- Keep `.env` untracked.
-
-## 4) Configure Oracle Instant Client startup script
-
-Run:
-
-```powershell
-.\scripts\win\instantclient-setup.cmd
-```
-
-When prompted, enter the absolute path of your extracted Instant Client folder.  
-This generates/updates `local-start.cmd`.
-
-macOS: `./scripts/mac/instantclient-setup.sh` (creates `local-start.sh`). `chmod +x local-start.sh scripts/mac/db-tunnel.sh` if needed.
-
-## 5) Start DB tunnel (Terminal A)
-
-Run and keep this terminal open:
-
-```powershell
-.\scripts\win\db-tunnel.cmd
-```
-macOS: `sh ./scripts/mac/db-tunnel.sh`
-
-This script:
-- opens SSH tunnel to UBC DB host
-- updates `.env` host/port for local access
-
-## 6) Start app locally (Terminal B)
-
-Run:
-
-```powershell
-.\local-start.cmd
-```
-
-Expected healthy output:
-- `Server running at http://localhost:<port>/`
-- `Connection pool started`
-
-If you see `ORA-00942` at first launch in the sample app, that is expected for demo table initialization. Use the reset button in UI for demo flow.
-
-macOS: `./local-start.sh`
-
-## 7) Load Monopoly SQL schema + seed data (remote SQL*Plus)
-
-Even with local app deployment, the course database is remote. Use SQL*Plus on remote server for schema/data setup.
-
-From local PowerShell:
-
-```powershell
-ssh <your_cwl>@remote.students.cs.ubc.ca "mkdir -p ~/CPSC304-Monopoly"
-scp -r ".\sql" <your_cwl>@remote.students.cs.ubc.ca:~/CPSC304-Monopoly/
-ssh <your_cwl>@remote.students.cs.ubc.ca
-```
-
-macOS Terminal: same three commands, but use `scp -r ./sql ...` instead of `.\sql`.
-
-Then on remote:
+## Run locally
 
 ```bash
-rlwrap sqlplus ora_<your_cwl>@stu
+npm run dev
 ```
 
-In SQL*Plus:
+Then open http://localhost:3000.
 
-```sql
-HOST pwd
-@/home/d/<your_cwl>/CPSC304-Monopoly/sql/setup.sql
+`npm run dev` is just a convenience for `npx serve public -l 3000` — any static file server (or even just opening `public/index.html`) works, but using a server avoids browser quirks with ES modules over `file://`.
+
+## Deploy to Vercel
+
+This repo ships ready to deploy as a static site:
+
+- `vercel.json` declares `outputDirectory: public` and no build command.
+- `public/` is a self-contained static site.
+
+To deploy:
+
+1. Push this repo to GitHub (it lives at `manggo-cd/MonopolyDB`).
+2. Go to https://vercel.com/new and import the repo.
+3. Accept the auto-detected settings — Vercel will pick up `vercel.json` automatically.
+4. Click Deploy. Subsequent pushes to `main` redeploy automatically.
+
+## Project layout
+
+```
+public/
+  index.html          home / setup screen
+  play.html           game screen (board, sidebar, action panel)
+  css/
+    home.css          setup styles
+    board.css         board grid + tiles + animations
+    components.css    sidebar / panels / modals
+  js/
+    engine/           pure game logic (no DOM, no storage)
+      board.js        40-square board data, prices, rents
+      cards.js        Chance + Community Chest decks
+      state.js        GameState factory
+      rules.js        rent, monopoly, jail, doubles, bankruptcy helpers
+      engine.js       public API (newGame, rollDice, buyProperty, ...)
+      persist.js      localStorage save/load
+    ui/
+      tokens.js       shared token registry
+      home.js         setup form
+      play.js         game-screen orchestrator
+      boardView.js    11×11 grid renderer
+      sidebar.js      players + log
+      actionPanel.js  roll / buy / end-turn / jail / trade buttons
+      propertyModal.js property card + build/sell/mortgage actions
+      tradeModal.js   two-step trade flow
+      cardModal.js    Chance / Community Chest draw modal
+      endGameModal.js winner banner + standings
+      sound.js        WebAudio blips
+  archive/            old CPSC 304 milestone pages (no longer functional, kept for posterity)
 ```
 
-Important:
-- Use full absolute path with `@...` in SQL*Plus (do not use `~`).
-- If needed, verify file exists:
+## Game rules implemented
 
-```sql
-HOST ls -l /home/d/<your_cwl>/CPSC304-Monopoly/sql
-```
+- Movement, dice doubles (extra turn, third double goes to jail).
+- Buying unowned properties / railroads / utilities; pay rent if owned (incl. mortgage = no rent).
+- Color-group monopoly rent doubling.
+- Railroad rent: $25/$50/$100/$200 by count owned.
+- Utility rent: 4× or 10× dice (or 10× when triggered by Chance card).
+- Houses & hotels with even-build & even-sell uniformity, bank inventory of 32 houses / 12 hotels.
+- Mortgage 50% list, unmortgage at 10% interest (rounded up).
+- Chance + Community Chest full standard decks; Get Out of Jail Free cards stay with the player and return to the deck on use.
+- Jail: pay $50 / use card / roll for doubles, 3-turn limit; "Go To Jail" square; speeding (3 doubles).
+- Income Tax ($200) and Luxury Tax ($100). Optional Free Parking jackpot house rule.
+- Trading: cash + properties + GOOJF cards both directions; rejects trading properties from improved color groups.
+- Bankruptcy: assets transfer to the creditor (or revert to the bank if owed to the bank).
+- Win condition: last solvent player.
 
-## 8) Expected SQL setup result
+## Future hooks (not implemented yet)
 
-`sql/setup.sql` runs:
-- `drop.sql`
-- `schema.sql`
-- `insert.sql`
-- `verify.sql`
+- Auctions on decline-to-buy.
+- Networked multiplayer. The engine is intentionally pure (every action takes a `GameState` and returns a new one), so a Vercel serverless route or a small relay could call the same engine for multi-device play.
+- AI opponents.
 
-Success criteria:
-- table creation succeeds
-- inserts commit
-- verification row counts and sample joins return data
+## License
 
-## 9) Common issues
-
-- `DPI-1047`: Instant Client not found in runtime path. Re-run the setup script for your OS (`instantclient-setup.cmd` or `scripts/mac/instantclient-setup.sh`); on Windows verify VC++ redistributable.
-- `ORA-12154`: malformed connect string (commonly whitespace in `.env`) or tunnel not active.
-- `ORA-01017`: wrong Oracle username/password.
-- `SP2-0310`: SQL*Plus cannot find script path; use full absolute path.
-
----
-
-At this point, local runtime + Oracle connectivity + Monopoly schema/seed data are all configured.
+MIT

@@ -1,0 +1,242 @@
+.sidebar {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.panel {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: var(--shadow);
+}
+
+.panel h3 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.player-row {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  gap: 10px;
+  padding: 8px 6px;
+  align-items: center;
+  border-radius: 8px;
+}
+
+.player-row.is-current {
+  background: rgba(200, 21, 45, 0.08);
+}
+
+.player-row .pr-token {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.2rem;
+  background: var(--bg);
+  border: 2px solid var(--owner-color, var(--accent));
+}
+
+.player-row .pr-name {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.player-row .pr-cash {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.player-row .pr-tags {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.tag {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--muted);
+}
+.tag.tag-jail { background: rgba(200, 21, 45, 0.12); color: var(--accent); }
+.tag.tag-bankrupt { background: rgba(0, 0, 0, 0.18); color: #555; text-decoration: line-through; }
+
+.pr-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+.pr-chips .chip {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  position: relative;
+  padding: 0;
+}
+.pr-chips .chip.mortgaged { opacity: 0.4; text-decoration: line-through; }
+.pr-chips .chip.housed::after,
+.pr-chips .chip.hotel::after {
+  content: attr(data-houses);
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: white;
+  color: #1d1d1f;
+  font-size: 0.55rem;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #1d1d1f;
+}
+.pr-chips .chip.hotel::after {
+  content: 'H';
+  background: #c8152d;
+  color: white;
+  border-color: #c8152d;
+}
+
+.action-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.action-panel .pending-prompt {
+  background: rgba(31, 111, 235, 0.08);
+  border: 1px solid rgba(31, 111, 235, 0.4);
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.action-panel .button-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  padding: 9px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  font-size: 0.9rem;
+  transition: filter 0.1s ease, transform 0.05s ease;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn:not(:disabled):hover { filter: brightness(1.05); }
+.btn:not(:disabled):active { transform: translateY(1px); }
+
+.btn.primary {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+}
+
+.btn.success {
+  background: #1fb25a;
+  color: white;
+  border-color: #1fb25a;
+}
+
+.btn.warn {
+  background: #f0b323;
+  color: #1d1d1f;
+  border-color: #f0b323;
+}
+
+.log-panel {
+  max-height: 320px;
+  overflow: auto;
+}
+
+.log {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.log li {
+  padding: 2px 0;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+}
+.log li:first-child {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+/* Modal system */
+.modal-root {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: grid;
+  place-items: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modal {
+  background: var(--bg-elev);
+  color: var(--fg);
+  max-width: 480px;
+  width: 100%;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border);
+}
+
+.modal h2 {
+  margin: 0 0 12px;
+  font-size: 1.4rem;
+}
+
+.modal p {
+  margin: 0 0 12px;
+  color: var(--muted);
+}
+
+.modal .modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
