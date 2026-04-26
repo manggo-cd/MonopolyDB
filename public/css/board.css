@@ -2,14 +2,22 @@
   color-scheme: light dark;
   --bg: #f3efe7;
   --bg-elev: #ffffff;
-  --board-bg: #cfe6d5;
   --fg: #1d1d1f;
   --muted: #5a5a5a;
   --accent: #c8152d;
   --accent-fg: #ffffff;
-  --border: #4b4b4b;
-  --tile-bg: #faf8f1;
+  --border: #d8d2c4;
   --shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+
+  /* The board's own palette is locked light, so it always looks like a real
+     Monopoly board even when the rest of the page is in dark mode. */
+  --board-felt: #c4ddc7;
+  --board-edge: #1a1a1a;
+  --tile-bg: #faf6e8;
+  --tile-fg: #1a1a1a;
+  --tile-muted: #555;
+  --tile-divider: #1a1a1a;
+
   --c-brown: #955436;
   --c-lightBlue: #aae0fa;
   --c-pink: #d93a96;
@@ -24,12 +32,11 @@
   :root {
     --bg: #181613;
     --bg-elev: #211f1c;
-    --board-bg: #1f3a2a;
     --fg: #f3efe7;
     --muted: #a8a8a8;
-    --border: #d8d2c4;
-    --tile-bg: #f8f5ec;
+    --border: #353230;
     --shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+    /* Board palette stays the same in dark mode by design. */
   }
 }
 
@@ -41,23 +48,28 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--fg);
-  font-family: 'Trebuchet MS', system-ui, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
 }
 
 .game-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 20px;
+  gap: 16px;
+  padding: 10px 18px;
   border-bottom: 1px solid var(--border);
   background: var(--bg-elev);
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
 .brand {
-  font-size: 1.4rem;
-  font-weight: 700;
-  letter-spacing: 1px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: 2px;
   color: var(--accent);
   text-transform: uppercase;
   text-decoration: none;
@@ -67,6 +79,12 @@ body {
   font-weight: 600;
   letter-spacing: 0.5px;
   color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
 }
 
 .header-actions button.ghost {
@@ -76,77 +94,107 @@ body {
   padding: 6px 12px;
   border-radius: 999px;
   cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+}
+
+.header-actions button.ghost:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  .header-actions button.ghost:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
 }
 
 .game {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
-  gap: 20px;
-  padding: 16px 20px 24px;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 16px;
+  padding: 14px 18px 18px;
+  align-items: start;
 }
 
 .board-wrap {
   display: grid;
-  place-items: center;
+  place-items: start center;
+  min-width: 0;
 }
 
 /* The Monopoly board: 11x11 grid. Edge tiles are tall (along their edge),
-   and corner tiles are square. The center is one big slot. */
+   and corner tiles are square. The center is one big slot.
+   Sized to ALWAYS fit the viewport: width capped vs. sidebar, height
+   capped vs. header + padding, and an absolute ceiling at 720px so it
+   never gets so big that it crowds out the sidebar. */
 .board {
-  --board-size: min(92vh, 92vmin, 920px);
+  --board-size: min(
+    calc(100dvh - 130px),
+    calc(100vw - 360px),
+    720px
+  );
   width: var(--board-size);
   height: var(--board-size);
-  background: var(--board-bg);
-  border: 2px solid var(--border);
+  background: var(--board-felt);
+  border: 3px solid var(--board-edge);
   display: grid;
-  grid-template-columns: 1.4fr repeat(9, 1fr) 1.4fr;
-  grid-template-rows: 1.4fr repeat(9, 1fr) 1.4fr;
+  grid-template-columns: 1.55fr repeat(9, 1fr) 1.55fr;
+  grid-template-rows: 1.55fr repeat(9, 1fr) 1.55fr;
   position: relative;
-  box-shadow: var(--shadow);
-  border-radius: 6px;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.06) inset,
+    0 12px 40px rgba(0, 0, 0, 0.18);
+  border-radius: 4px;
   overflow: hidden;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
+
+/* ---------- TILES ---------- */
 
 .tile {
   background: var(--tile-bg);
-  border: 1px solid var(--border);
+  border: 1px solid var(--tile-divider);
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: space-between;
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   line-height: 1.05;
   padding: 4px 4px 6px;
-  color: #1d1d1f;
+  color: var(--tile-fg);
+  overflow: hidden;
 }
 
 .tile .tile-name {
   text-align: center;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.2px;
-  font-size: 0.58rem;
+  letter-spacing: 0.3px;
+  font-size: 0.55rem;
   hyphens: auto;
   word-break: break-word;
+  color: var(--tile-fg);
 }
 
 .tile .tile-price {
   text-align: center;
-  color: #555;
+  color: var(--tile-muted);
   font-size: 0.55rem;
+  font-weight: 500;
 }
 
 .tile .tile-icon {
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   line-height: 1;
+  margin: 2px 0;
 }
 
 .tile .color-band {
-  height: 18%;
+  height: 26%;
   margin: -4px -4px 4px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid var(--tile-divider);
 }
 
 .tile.color-brown .color-band { background: var(--c-brown); }
@@ -163,99 +211,166 @@ body {
 .tile.edge-top .color-band {
   margin: 4px -4px -4px;
   border-bottom: none;
-  border-top: 1px solid var(--border);
+  border-top: 2px solid var(--tile-divider);
 }
-.tile.edge-left {
-  flex-direction: row;
-  align-items: stretch;
-  padding: 4px;
-}
-.tile.edge-left .color-band {
-  width: 18%;
-  height: auto;
-  margin: -4px 4px -4px -4px;
-  border-bottom: none;
-  border-right: 1px solid var(--border);
-}
-.tile.edge-left .tile-body { display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
-.tile.edge-left .tile-name { writing-mode: vertical-rl; transform: rotate(180deg); }
-.tile.edge-left .tile-price { writing-mode: vertical-rl; transform: rotate(180deg); }
 
-.tile.edge-right {
+.tile.edge-left {
   flex-direction: row-reverse;
   align-items: stretch;
   padding: 4px;
 }
-.tile.edge-right .color-band {
-  width: 18%;
+.tile.edge-left .color-band {
+  width: 26%;
   height: auto;
   margin: -4px -4px -4px 4px;
   border-bottom: none;
-  border-left: 1px solid var(--border);
+  border-left: 2px solid var(--tile-divider);
 }
-.tile.edge-right .tile-body { display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
+.tile.edge-left .tile-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+.tile.edge-left .tile-name { writing-mode: vertical-rl; transform: rotate(180deg); }
+.tile.edge-left .tile-price { writing-mode: vertical-rl; transform: rotate(180deg); }
+
+.tile.edge-right {
+  flex-direction: row;
+  align-items: stretch;
+  padding: 4px;
+}
+.tile.edge-right .color-band {
+  width: 26%;
+  height: auto;
+  margin: -4px 4px -4px -4px;
+  border-bottom: none;
+  border-right: 2px solid var(--tile-divider);
+}
+.tile.edge-right .tile-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
 .tile.edge-right .tile-name { writing-mode: vertical-rl; }
 .tile.edge-right .tile-price { writing-mode: vertical-rl; }
 
-/* Corners are bigger and have icon + label only. */
+/* Corners: bigger, distinct, no color band */
 .tile.corner {
   align-items: center;
   justify-content: center;
   font-size: 0.7rem;
   text-align: center;
+  padding: 6px;
+  background: var(--tile-bg);
 }
-.tile.corner .corner-icon { font-size: 1.8rem; line-height: 1; }
-.tile.corner .corner-label { font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.tile.corner .corner-icon {
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.tile.corner .corner-label {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-size: 0.62rem;
+  line-height: 1.1;
+  max-width: 100%;
+}
 
+/* Subtle differentiation per corner */
+.tile.corner[data-index="0"]   { background: linear-gradient(135deg, #faf6e8, #ffe9bd); } /* GO */
+.tile.corner[data-index="10"]  { background: linear-gradient(135deg, #faf6e8, #ffd7d7); } /* Just Visiting / Jail */
+.tile.corner[data-index="20"]  { background: linear-gradient(135deg, #faf6e8, #d7ecff); } /* Free Parking */
+.tile.corner[data-index="30"]  { background: linear-gradient(135deg, #faf6e8, #ffd7d7); } /* Go To Jail */
+
+/* Highlight current player's tile */
 .tile.tile-current {
   outline: 3px solid var(--accent);
   outline-offset: -3px;
-}
-
-.tile.tile-owned-self::after,
-.tile.tile-owned::after {
-  content: '';
-  position: absolute;
-  inset: auto 4px 4px 4px;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--owner-color, var(--accent));
+  z-index: 1;
 }
 
 .tile.tile-mortgaged {
-  filter: grayscale(0.6);
+  filter: grayscale(0.5);
   opacity: 0.85;
 }
+
+.tile[style*="cursor: pointer"]:hover {
+  filter: brightness(1.04);
+}
+
+/* Owner stripe sits on the OUTER rim of each edge tile (the side facing
+   the board's outer border), opposite the color band which sits on the
+   inner rim facing the center. */
+.tile.tile-owned::after {
+  content: '';
+  position: absolute;
+  background: var(--owner-color, var(--accent));
+  border-radius: 2px;
+}
+.tile.edge-top.tile-owned::after    { left: 4px; right: 4px; top: 2px;    height: 3px; }
+.tile.edge-bottom.tile-owned::after { left: 4px; right: 4px; bottom: 2px; height: 3px; }
+.tile.edge-left.tile-owned::after   { top: 4px;  bottom: 4px; left: 2px;  width: 3px; }
+.tile.edge-right.tile-owned::after  { top: 4px;  bottom: 4px; right: 2px; width: 3px; }
+
+/* ---------- CENTER ---------- */
 
 .center-area {
   grid-column: 2 / 11;
   grid-row: 2 / 11;
-  background: linear-gradient(135deg, #d6efdc, #cfe6d5);
-  border: 1px dashed rgba(0, 0, 0, 0.2);
+  background:
+    radial-gradient(ellipse at 30% 30%, rgba(255, 255, 255, 0.35), transparent 60%),
+    var(--board-felt);
   display: grid;
   place-items: center;
   text-align: center;
-  color: #1d1d1f;
-  font-family: 'Georgia', serif;
+  color: #1a1a1a;
+  position: relative;
 }
+
+.center-area::before {
+  content: '';
+  position: absolute;
+  inset: 6%;
+  border: 1px dashed rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  pointer-events: none;
+}
+
 .center-area .center-title {
-  font-size: clamp(1.6rem, 4vw, 3rem);
-  letter-spacing: 4px;
+  font-family: 'Bebas Neue', 'Oswald', 'Trebuchet MS', system-ui, sans-serif;
+  font-size: clamp(2rem, 6vw, 4.5rem);
+  letter-spacing: 8px;
   color: var(--accent);
   text-transform: uppercase;
+  font-weight: 800;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.08);
+  transform: rotate(-30deg);
+  margin: 0;
 }
+
 .center-area .center-sub {
-  margin-top: 8px;
-  color: #555;
+  margin-top: 10px;
+  color: #444;
   font-size: 0.95rem;
+  font-style: italic;
+  transform: rotate(-30deg);
 }
+
 .center-area .dice {
-  margin-top: 14px;
-  font-size: 2.4rem;
+  margin-top: 18px;
+  font-size: 2.6rem;
   letter-spacing: 14px;
   font-family: ui-monospace, Menlo, Consolas, monospace;
-  color: #1d1d1f;
+  color: #1a1a1a;
   display: inline-block;
+  transform: rotate(-30deg);
 }
 
 .center-area .dice.rolling {
@@ -263,12 +378,12 @@ body {
 }
 
 @keyframes dice-shake {
-  0%   { transform: translate(0, 0) rotate(0deg); }
-  20%  { transform: translate(-3px, 1px) rotate(-6deg); }
-  40%  { transform: translate(3px, -1px) rotate(6deg); }
-  60%  { transform: translate(-3px, 2px) rotate(-3deg); }
-  80%  { transform: translate(2px, -2px) rotate(3deg); }
-  100% { transform: translate(0, 0) rotate(0deg); }
+  0%   { transform: rotate(-30deg) translate(0, 0); }
+  20%  { transform: rotate(-36deg) translate(-3px, 1px); }
+  40%  { transform: rotate(-24deg) translate(3px, -1px); }
+  60%  { transform: rotate(-33deg) translate(-3px, 2px); }
+  80%  { transform: rotate(-27deg) translate(2px, -2px); }
+  100% { transform: rotate(-30deg) translate(0, 0); }
 }
 
 .tile.tile-just-landed {
@@ -281,11 +396,8 @@ body {
   100% { box-shadow: inset 0 0 0 0 var(--accent); }
 }
 
-.token-pip.token-moving {
-  transition: transform 0.4s ease;
-}
+/* ---------- TOKENS ---------- */
 
-/* Player tokens overlaid on the tile they're standing on. */
 .token-stack {
   position: absolute;
   top: 4px;
@@ -294,7 +406,7 @@ body {
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 2px;
-  max-width: 60%;
+  max-width: 70%;
   z-index: 2;
 }
 .tile.corner .token-stack {
@@ -303,16 +415,19 @@ body {
   bottom: 6px;
 }
 .token-pip {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  background: var(--bg-elev);
+  background: #ffffff;
   border: 2px solid var(--owner-color, #888);
   display: grid;
   place-items: center;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
 }
+
+/* ---------- HOUSES ---------- */
 
 .house-row {
   position: absolute;
@@ -321,12 +436,9 @@ body {
   font-size: 9px;
   letter-spacing: -2px;
   z-index: 2;
-  text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.9);
 }
-.tile.edge-top .house-row {
-  top: auto;
-  bottom: 2px;
-}
+.tile.edge-top .house-row { top: auto; bottom: 2px; }
 .tile.edge-left .house-row {
   top: auto;
   bottom: 4px;
@@ -338,29 +450,32 @@ body {
   left: 4px;
   right: auto;
 }
-@media (max-width: 1100px) {
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 980px) {
   .game {
     grid-template-columns: 1fr;
-    padding: 10px;
+    padding: 12px;
   }
   .sidebar {
-    order: 2;
     grid-template-columns: 1fr 1fr;
     display: grid;
+    order: 2;
   }
   .log-panel { grid-column: 1 / -1; }
-  .board { --board-size: min(94vw, 92vmin, 720px); }
+  .board { --board-size: min(94vw, 720px); }
 }
 
 @media (max-width: 700px) {
   .sidebar { grid-template-columns: 1fr; }
-  .game-header { padding: 10px 14px; }
-  .brand { font-size: 1.1rem; }
-  .turn-indicator { font-size: 0.9rem; }
-  .header-actions button.ghost { padding: 4px 10px; font-size: 0.85rem; }
+  .game-header { padding: 8px 12px; }
+  .brand { font-size: 1rem; }
+  .turn-indicator { font-size: 0.8rem; }
+  .header-actions button.ghost { padding: 4px 10px; font-size: 0.75rem; }
   .tile { font-size: 0.5rem; }
   .tile .tile-name { font-size: 0.5rem; }
   .tile .tile-price { font-size: 0.48rem; }
-  .center-area .center-title { font-size: 1.2rem; letter-spacing: 2px; }
+  .center-area .center-title { font-size: 1.8rem; letter-spacing: 4px; }
   .center-area .dice { font-size: 1.6rem; letter-spacing: 8px; }
 }
